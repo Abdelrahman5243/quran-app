@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { navigate } from "../features/ayahsSlice";
 
 const AudioPlayer = () => {
-  const surahsIndex = useSelector((state) => state.ayahs.surahsIndex);
-  const ayahsIndex = useSelector((state) => state.ayahs.ayahsIndex);
-  const surahs = useSelector((state) => state.ayahs.data?.surahs);
+  const { surahsIndex, ayahsIndex, surahs } = useSelector(
+    (state) => state.ayahs
+  );
   const ayahAudio = surahs && surahs[surahsIndex]?.ayahs[ayahsIndex]?.audio;
 
+  const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const audioRef = useRef(null);
@@ -28,29 +30,42 @@ const AudioPlayer = () => {
     setIsLoading(true);
   };
 
+  const handleEnded = async () => {
+    await dispatch(navigate({ direction: "right" }));
+    audioRef.current.play();
+    setIsPlaying(true);
+  };
+
   useEffect(() => {
+    audioRef.current.pause();
     setIsPlaying(false);
-  }, [ayahsIndex]);
+  }, [surahsIndex, ayahsIndex]);
+  
   return (
     <>
       <button
-        className="p-4 w-full rounded-full text-gray-600 dark:text-gray-100 mx-auto text-6xl"
+        className={`w-16 h-16 flex justify-center items-center 
+          rounded-full text-gray-600 dark:text-gray-100 mx-auto ${
+            isLoading ? "animate-spin" : ""
+          }`}
         onClick={togglePlayPause}
         disabled={isLoading}
       >
-        {isPlaying ? (
-          <i className="ri-pause-circle-fill"></i>
+        {isLoading ? (
+          <i className="ri-reset-right-line text-5xl"></i>
+        ) : isPlaying ? (
+          <i className="ri-pause-circle-fill text-5xl"></i>
         ) : (
-          <i className="ri-play-circle-fill"></i>
+          <i className="ri-play-circle-fill text-5xl"></i>
         )}
       </button>
-      {isLoading && <div>Loading...</div>}
+
       <audio
         ref={audioRef}
         src={ayahAudio}
         onCanPlay={handleCanPlay}
         onWaiting={handleWaiting}
-        onEnded={() => setIsPlaying(false)}
+        onEnded={handleEnded}
       ></audio>
     </>
   );

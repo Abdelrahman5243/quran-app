@@ -4,9 +4,9 @@ import { setSurahsIndex, setAyahsIndex } from "../features/ayahsSlice";
 
 const OptionSelectors = () => {
   const dispatch = useDispatch();
-  const surahsIndex = useSelector((state) => state.ayahs.surahsIndex);
-  const ayahsIndex = useSelector((state) => state.ayahs.ayahsIndex);
-  const surahs = useSelector((state) => state.ayahs.data?.surahs);
+  const { surahsIndex, ayahsIndex, surahs } = useSelector(
+    (state) => state.ayahs
+  );
 
   const ayahs = surahs?.[surahsIndex]?.ayahs || [];
 
@@ -15,7 +15,10 @@ const OptionSelectors = () => {
       <select
         id="souraSelect"
         value={surahsIndex}
-        onChange={(e) => dispatch(setSurahsIndex(parseInt(e.target.value)))}
+        onChange={(e) => {
+          dispatch(setSurahsIndex(parseInt(e.target.value)));
+          dispatch(setAyahsIndex(0));
+        }}
       >
         {surahs?.map((surah, index) => (
           <option key={index} value={index}>
