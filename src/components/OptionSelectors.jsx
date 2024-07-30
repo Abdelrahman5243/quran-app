@@ -12,32 +12,42 @@ const OptionSelectors = () => {
 
   return (
     <div className="select p-5 w-full flex justify-between">
-      <select
-        id="souraSelect"
-        value={surahsIndex}
-        onChange={(e) => {
-          dispatch(setSurahsIndex(parseInt(e.target.value)));
-          dispatch(setAyahsIndex(0));
-        }}
-      >
-        {surahs?.map((surah, index) => (
-          <option key={index} value={index}>
-            {surah.name}
-          </option>
-        ))}
-      </select>
+      <div className="flex items-center">
+        <select
+          id="souraSelect"
+          className="text-center"
+          value={surahsIndex}
+          onChange={(e) => {
+            dispatch(setSurahsIndex(parseInt(e.target.value)));
+            dispatch(setAyahsIndex(0));
+          }}
+        >
+          {surahs?.map((surah, index) => (
+            <option key={index} value={index}>
+              {surah.name}
+            </option>
+          ))}
+        </select>
+        <i className="ri-arrow-down-s-fill ml-2"></i>
+      </div>
 
-      <select
-        id="ayahSelect"
-        value={ayahsIndex + 1}
-        onChange={(e) => dispatch(setAyahsIndex(parseInt(e.target.value) - 1))}
-      >
-        {ayahs.map((ayah, index) => (
-          <option key={index} value={index + 1}>
-            {`آية ${index + 1}`}
-          </option>
-        ))}
-      </select>
+      <div className="flex items-center">
+        <select
+          id="ayahSelect"
+          className="text-center"
+          value={ayahsIndex + 1}
+          onChange={(e) =>
+            dispatch(setAyahsIndex(parseInt(e.target.value) - 1))
+          }
+        >
+          {ayahs.map((ayah, index) => (
+            <option key={index} value={index + 1}>
+              {`آية ${index + 1}`}
+            </option>
+          ))}
+        </select>
+        <i className="ri-arrow-down-s-fill ml-2"></i>
+      </div>
     </div>
   );
 };

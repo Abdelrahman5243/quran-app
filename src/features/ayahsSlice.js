@@ -32,16 +32,18 @@ const ayahsSlice = createSlice({
   name: "ayahs",
   initialState: {
     surahs: [],
-    surahsIndex: 0, // Index of the selected surah
-    ayahsIndex: 0, // Index of the selected ayah
+    surahsIndex: parseInt(localStorage.getItem("surahsIndex"), 10) || 0, // Load from localStorage
+    ayahsIndex: parseInt(localStorage.getItem("ayahsIndex"), 10) || 0, // Load from localStorage
     status: "idle",
   },
   reducers: {
     setSurahsIndex: (state, action) => {
       state.surahsIndex = action.payload;
+      localStorage.setItem("surahsIndex", action.payload); // Save to localStorage
     },
     setAyahsIndex: (state, action) => {
       state.ayahsIndex = action.payload;
+      localStorage.setItem("ayahsIndex", action.payload); // Save to localStorage
     },
     navigate: (state, action) => {
       const { direction } = action.payload;
@@ -67,6 +69,10 @@ const ayahsSlice = createSlice({
           state.ayahsIndex = 0;
         }
       }
+
+      // Save updated indices to localStorage
+      localStorage.setItem("surahsIndex", state.surahsIndex);
+      localStorage.setItem("ayahsIndex", state.ayahsIndex);
     },
   },
   extraReducers: (builder) => {
