@@ -9,38 +9,48 @@ import Footer from "./components/Footer";
 function App() {
   const [mode, setMode] = useState(false);
   const dispatch = useDispatch();
-
   const status = useSelector((state) => state.ayahs.status);
+  const error = useSelector((state) => state.ayahs.error);
 
   useEffect(() => {
     dispatch(fetchAllAyahs());
-  }, []);
+  }, [dispatch]);
+
+  const handleModeToggle = () => {
+    setMode((prevMode) => !prevMode);
+  };
+
   if (status === "loading") {
     return <Loader />;
   }
 
   if (status === "failed") {
-    return <div>Error loading data.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <p className="text-red-500">Error loading data: {error}</p>
+      </div>
+    );
   }
 
   return (
     <div className={`${mode ? "" : "dark"}`}>
       <div className="min-h-screen font-tajawal bg-gray-100 dark:bg-slate-700">
-        <div className="container p-4 flex justify-between items-center text-2xl text-gray-600 dark:text-gray-100 flex-row-reverse">
+        <header className="container p-4 flex justify-between items-center text-2xl text-gray-600 dark:text-gray-100 flex-row-reverse">
           <div className="font-bold select-none cursor-pointer">
             القرأن الكريم
           </div>
           <button
             className="mode_btn cursor-pointer"
-            onClick={() => setMode(!mode)}
+            onClick={handleModeToggle}
+            aria-label={`Switch to ${mode ? "dark" : "light"} mode`}
           >
             {mode ? (
-              <i className="ri-sun-fill"></i>
+              <i className="ri-sun-fill" aria-hidden="true"></i>
             ) : (
-              <i className="ri-moon-fill"></i>
+              <i className="ri-moon-fill" aria-hidden="true"></i>
             )}
           </button>
-        </div>
+        </header>
         <Card />
         <AudioPlayer />
       </div>
