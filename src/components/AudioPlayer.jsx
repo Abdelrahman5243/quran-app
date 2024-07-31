@@ -35,7 +35,6 @@ const AudioPlayer = () => {
       await dispatch(navigate({ direction: "right" }));
       audioRef.current.play();
       setIsPlaying(true);
-      console.log(surahsIndex, ayahsIndex);
     } else {
       audioRef.current.pause();
       setIsPlaying(false);
