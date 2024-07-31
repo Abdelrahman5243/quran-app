@@ -17,7 +17,7 @@ const NavigationButtons = ({ children }) => {
   return (
     <div className="flex justify-center w-full items-center text-gray-600 dark:text-gray-100">
       <button
-        className="cursor-pointer text-xl"
+        className="cursor-pointer text-xl px-2 py-20"
         onClick={leftMove}
         aria-label="Navigate left"
       >
@@ -27,7 +27,7 @@ const NavigationButtons = ({ children }) => {
       {children}
 
       <button
-        className="cursor-pointer text-xl"
+        className="cursor-pointer text-xl px-2 py-20"
         onClick={rightMove}
         aria-label="Navigate right"
       >

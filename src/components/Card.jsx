@@ -5,7 +5,7 @@ import OptionSelectors from "./OptionSelectors";
 
 const Card = () => {
   return (
-    <div className="container p-4 my-20 flex justify-between items-center">
+    <div className="container p-4 flex justify-between items-center">
       <NavigationButtons>
         <div className="card shadow-md text-center bg-white rounded-lg dark:bg-slate-800 flex flex-col w-full font-medium text-2xl md:text-lg">
           <AyahContent />

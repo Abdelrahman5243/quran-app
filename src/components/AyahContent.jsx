@@ -2,9 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const AyahContent = () => {
-  const {  ayahsIndex, currentSurah } = useSelector(
-    (state) => state.ayahs
-  );
+  const { ayahsIndex, currentSurah } = useSelector((state) => state.ayahs);
   const ayahText = currentSurah?.ayahs[ayahsIndex]?.text || "No Ayah found.";
 
   return (
@@ -14,7 +12,7 @@ const AyahContent = () => {
       aria-live="polite" // Announces updates politely to assistive technologies
       aria-labelledby="ayah-content-heading" // Associates with a heading for context
     >
-      <p id="ayah-content" className="p-2">
+      <p id="ayah-content" className="p-2 leading-loose">
         {ayahText}
       </p>
     </div>

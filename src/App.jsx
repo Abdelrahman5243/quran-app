@@ -33,7 +33,10 @@ function App() {
 
   return (
     <div className={`${mode ? "" : "dark"}`}>
-      <div className="min-h-screen bg-gray-100 dark:bg-slate-700">
+      <div
+        className="min-h-screen bg-gray-100 dark:bg-slate-700
+       flex flex-col justify-between"
+      >
         <header className="container p-4 flex justify-between items-center text-2xl text-gray-600 dark:text-gray-100 flex-row-reverse">
           <div className="font-bold select-none cursor-pointer">
             القرأن الكريم
@@ -50,10 +53,12 @@ function App() {
             )}
           </button>
         </header>
-        <Card />
-        <AudioPlayer />
+        <main>
+          <Card />
+          <AudioPlayer />
+        </main>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 }
