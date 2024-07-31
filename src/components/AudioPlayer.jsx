@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../features/ayahsSlice";
 
 const AudioPlayer = () => {
-  const { surahsIndex, ayahsIndex, surahs } = useSelector(
+  const { surahsIndex, ayahsIndex, currentSurah } = useSelector(
     (state) => state.ayahs
   );
-  const ayahAudio = surahs && surahs[surahsIndex]?.ayahs[ayahsIndex]?.audio;
+  const ayahAudio = currentSurah?.ayahs[ayahsIndex]?.audio;
 
   const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(false);

@@ -2,11 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const AyahContent = () => {
-  const { surahsIndex, ayahsIndex, surahs } = useSelector(
+  const {  ayahsIndex, currentSurah } = useSelector(
     (state) => state.ayahs
   );
-  const ayahText =
-    surahs[surahsIndex]?.ayahs[ayahsIndex]?.text || "No Ayah found.";
+  const ayahText = currentSurah?.ayahs[ayahsIndex]?.text || "No Ayah found.";
 
   return (
     <div

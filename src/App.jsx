@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllAyahs } from "./features/ayahsSlice";
+import { fetchSurah } from "./features/ayahsSlice";
 import Card from "./components/Card";
 import { Loader } from "./components/Loader";
 import AudioPlayer from "./components/AudioPlayer";
@@ -9,12 +9,12 @@ import Footer from "./components/Footer";
 function App() {
   const [mode, setMode] = useState(false);
   const dispatch = useDispatch();
-  const status = useSelector((state) => state.ayahs.status);
-  const error = useSelector((state) => state.ayahs.error);
+  const { surahsIndex, status, error } = useSelector((state) => state.ayahs);
 
   useEffect(() => {
-    dispatch(fetchAllAyahs());
-  }, [dispatch]);
+    dispatch(fetchSurah());
+    console.log(surahsIndex);
+  }, [surahsIndex, dispatch]);
 
   const handleModeToggle = () => {
     setMode((prevMode) => !prevMode);

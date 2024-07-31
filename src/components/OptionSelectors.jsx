@@ -1,14 +1,14 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSurahsIndex, setAyahsIndex } from "../features/ayahsSlice";
-
+import surahNames from "../staticData/surahNames";
 const OptionSelectors = () => {
   const dispatch = useDispatch();
-  const { surahsIndex, ayahsIndex, surahs } = useSelector(
+  const { surahsIndex, ayahsIndex, currentSurah } = useSelector(
     (state) => state.ayahs
   );
 
-  const ayahs = surahs?.[surahsIndex]?.ayahs || [];
+  const ayahs = currentSurah?.ayahs || [];
 
   const handleSurahsChange = (e) => {
     dispatch(setSurahsIndex(parseInt(e.target.value)));
@@ -32,9 +32,9 @@ const OptionSelectors = () => {
           onChange={handleSurahsChange}
           aria-label="Select Surah"
         >
-          {surahs?.map((surah, index) => (
-            <option key={index} value={index}>
-              {surah.name}
+          {surahNames.map(({ number, name }) => (
+            <option key={number} value={number}>
+              {name}
             </option>
           ))}
         </select>

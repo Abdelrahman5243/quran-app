@@ -1,31 +1,35 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Async thunk to fetch all Ayahs
-export const fetchAllAyahs = createAsyncThunk(
-  "ayahs/fetchAllAyahs",
-  async (_, { rejectWithValue }) => {
+// Async thunk to fetch a specific Surah
+export const fetchSurah = createAsyncThunk(
+  "ayahs/fetchSurah",
+  async (_, { getState, rejectWithValue }) => {
+    const state = getState();
+    const surahNumber = state.ayahs.surahsIndex;
+
+    if (!surahNumber) {
+      return rejectWithValue("Invalid surah number");
+    }
+
     try {
-      // Get data from localStorage first
-      const cachedData = localStorage.getItem("ayahsData");
-
-      if (cachedData) {
-        // If data in localStorage
-        return JSON.parse(cachedData);
-      } else {
-        // If data is not in localStorage, fetch it from the server
-        const response = await fetch(
-          "https://api.alquran.cloud/v1/quran/ar.alafasy"
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-
-        // Store in localStorage
-        localStorage.setItem("ayahsData", JSON.stringify(data.data));
-
-        return data.data;
+      const response = await fetch(
+        `https://api.alquran.cloud/v1/surah/${surahNumber}/ar.alafasy`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
+      const data = await response.json();
+
+      // Extract only text and audio fields
+      const ayahs = data.data.ayahs.map((ayah) => ({
+        text: ayah.text,
+        audio: ayah.audio,
+      }));
+
+      // Update localStorage with the current surahsIndex
+      localStorage.setItem("surahsIndex", surahNumber);
+
+      return { ayahs }; // Returning the modified data structure
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -35,25 +39,24 @@ export const fetchAllAyahs = createAsyncThunk(
 const ayahsSlice = createSlice({
   name: "ayahs",
   initialState: {
-    surahs: [],
-    surahsIndex: parseInt(localStorage.getItem("surahsIndex"), 10) || 0, // Load from localStorage
-    ayahsIndex: parseInt(localStorage.getItem("ayahsIndex"), 10) || 0, // Load from localStorage
+    currentSurah: null, // Data for the current surah
+    surahsIndex: parseInt(localStorage.getItem("surahsIndex"), 10) || 1,
+    ayahsIndex: parseInt(localStorage.getItem("ayahsIndex"), 10) || 0,
     status: "idle",
     error: null,
   },
   reducers: {
     setSurahsIndex: (state, action) => {
       state.surahsIndex = action.payload;
-      localStorage.setItem("surahsIndex", action.payload); // Save to localStorage
+      localStorage.setItem("surahsIndex", action.payload);
     },
     setAyahsIndex: (state, action) => {
       state.ayahsIndex = action.payload;
-      localStorage.setItem("ayahsIndex", action.payload); // Save to localStorage
+      localStorage.setItem("ayahsIndex", action.payload);
     },
     navigate: (state, action) => {
       const { direction } = action.payload;
-      const surahs = state.surahs;
-      const currentSurah = surahs[state.surahsIndex];
+      const currentSurah = state.currentSurah;
       const currentAyahIndex = state.ayahsIndex;
 
       const updateIndices = (newSurahIndex, newAyahIndex) => {
@@ -66,15 +69,15 @@ const ayahsSlice = createSlice({
       if (direction === "left") {
         if (currentAyahIndex > 0) {
           updateIndices(state.surahsIndex, currentAyahIndex - 1);
-        } else if (state.surahsIndex > 0) {
+        } else if (state.surahsIndex > 1) {
           const prevSurahIndex = state.surahsIndex - 1;
-          const previousSurah = surahs[prevSurahIndex];
-          updateIndices(prevSurahIndex, previousSurah.ayahs.length - 1);
+          updateIndices(prevSurahIndex, -1); // Adjust to handle the previous surah
         }
       } else if (direction === "right") {
         if (currentAyahIndex < (currentSurah?.ayahs.length || 0) - 1) {
           updateIndices(state.surahsIndex, currentAyahIndex + 1);
-        } else if (state.surahsIndex < surahs.length - 1) {
+        } else if (state.surahsIndex < 114) {
+          // Ensure that you don't go beyond the total number of surahs
           updateIndices(state.surahsIndex + 1, 0);
         }
       }
@@ -82,15 +85,15 @@ const ayahsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllAyahs.pending, (state) => {
+      .addCase(fetchSurah.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(fetchAllAyahs.fulfilled, (state, action) => {
+      .addCase(fetchSurah.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.surahs = action.payload.surahs;
+        state.currentSurah = action.payload;
       })
-      .addCase(fetchAllAyahs.rejected, (state, action) => {
+      .addCase(fetchSurah.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || "Failed to fetch data";
       });
