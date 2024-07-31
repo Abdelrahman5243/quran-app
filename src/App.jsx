@@ -13,7 +13,6 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchSurah());
-    console.log(surahsIndex);
   }, [surahsIndex, dispatch]);
 
   const handleModeToggle = () => {

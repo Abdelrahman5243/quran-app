@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 // Async thunk to fetch a specific Surah
 export const fetchSurah = createAsyncThunk(
@@ -12,9 +13,7 @@ export const fetchSurah = createAsyncThunk(
     }
 
     try {
-      const response = await fetch(
-        `https://api.alquran.cloud/v1/surah/${surahNumber}/ar.alafasy`
-      );
+      const response = await fetch(`${apiUrl}/${surahNumber}/ar.alafasy`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
