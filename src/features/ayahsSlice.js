@@ -70,7 +70,7 @@ const ayahsSlice = createSlice({
           updateIndices(state.surahsIndex, currentAyahIndex - 1);
         } else if (state.surahsIndex > 1) {
           const prevSurahIndex = state.surahsIndex - 1;
-          updateIndices(prevSurahIndex, -1); // Adjust to handle the previous surah
+          updateIndices(prevSurahIndex,0); // to the previous surah
         }
       } else if (direction === "right") {
         if (currentAyahIndex < (currentSurah?.ayahs.length || 0) - 1) {
