@@ -34,10 +34,10 @@ function App() {
   return (
     <div className={`${mode ? "" : "dark"}`}>
       <div
-        className="min-h-screen bg-gray-100 dark:bg-slate-700
-       flex flex-col justify-between"
+        className="min-h-screen bg-light-1 dark:bg-dark-1
+       flex flex-col justify-between text-dark-1 dark:text-light-2"
       >
-        <header className="container p-4 flex justify-between items-center text-2xl text-gray-600 dark:text-gray-100 flex-row-reverse">
+        <header className="container p-4 flex justify-between items-center text-2xl flex-row-reverse">
           <div className="font-bold select-none cursor-pointer">
             القرأن الكريم
           </div>

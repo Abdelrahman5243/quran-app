@@ -1,8 +1,9 @@
+// eslint-disable-next-line no-unused-vars
 import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="w-full text-gray-600 dark:text-gray-100 bg-white dark:bg-slate-800 text-center py-4 shadow-md">
+    <footer className=" w-full bg-light-2 dark:bg-dark-2 text-center py-4 shadow-md">
       <p className="text-sm">
         Using{" "}
         <a

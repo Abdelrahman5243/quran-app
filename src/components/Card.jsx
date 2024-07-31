@@ -7,7 +7,7 @@ const Card = () => {
   return (
     <div className="container p-4 flex justify-between items-center">
       <NavigationButtons>
-        <div className="card shadow-md text-center bg-white rounded-lg dark:bg-slate-800 flex flex-col w-full font-medium text-2xl md:text-lg">
+        <div className="card ring-2 ring-gray-200 dark:ring-0 text-center bg-light-2 rounded-lg dark:bg-dark-2 flex flex-col w-full font-medium text-2xl md:text-lg">
           <AyahContent />
           <OptionSelectors />
         </div>

@@ -59,7 +59,7 @@ const AudioPlayer = () => {
         Audio Player
       </h2>
       <button
-        className={`w-16 h-16 flex justify-center items-center rounded-full text-gray-600 dark:text-gray-100 mx-auto ${
+        className={`w-16 h-16 flex justify-center items-center rounded-full mx-auto ${
           isLoading ? "animate-spin" : ""
         }`}
         onClick={togglePlayPause}

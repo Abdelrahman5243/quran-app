@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 *{
-    transition: ease 0.2s;
+    transition: ease 0.1s;
 }
   .loader {
     height: 27.5;
