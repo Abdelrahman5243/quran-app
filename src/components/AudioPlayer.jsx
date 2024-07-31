@@ -31,9 +31,15 @@ const AudioPlayer = () => {
   };
 
   const handleEnded = async () => {
-    await dispatch(navigate({ direction: "right" }));
-    audioRef.current.play();
-    setIsPlaying(true);
+    if (!(surahsIndex === 114 && ayahsIndex === 5)) {
+      await dispatch(navigate({ direction: "right" }));
+      audioRef.current.play();
+      setIsPlaying(true);
+      console.log(surahsIndex, ayahsIndex);
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
   };
 
   useEffect(() => {
