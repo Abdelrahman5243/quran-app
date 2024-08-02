@@ -35,7 +35,7 @@ function App() {
   return (
     <div className={`${mode ? "" : "dark"}`}>
       <div
-        className="min-h-screen max-h-screen bg-light-1 dark:bg-dark-1
+        className="h-screen max-h-screen bg-light-1 dark:bg-dark-1
        flex flex-col justify-between text-dark-1 dark:text-light-2"
       >
         <header className="container p-4 flex justify-between items-center text-2xl flex-row-reverse">
