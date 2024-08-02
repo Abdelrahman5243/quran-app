@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSurah } from "./features/ayahsSlice";
@@ -34,7 +35,7 @@ function App() {
   return (
     <div className={`${mode ? "" : "dark"}`}>
       <div
-        className="min-h-screen bg-light-1 dark:bg-dark-1
+        className="min-h-screen max-h-screen bg-light-1 dark:bg-dark-1
        flex flex-col justify-between text-dark-1 dark:text-light-2"
       >
         <header className="container p-4 flex justify-between items-center text-2xl flex-row-reverse">
