@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../features/ayahsSlice";
+import ReaderSelector from "./ReaderSelector";
 
 const AudioPlayer = () => {
-  const { surahsIndex, ayahsIndex, currentSurah } = useSelector(
+  const { surahsIndex, ayahsIndex, currentSurah, reader } = useSelector(
     (state) => state.ayahs
   );
   const ayahAudio = currentSurah?.ayahs[ayahsIndex]?.audio;
-
   const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,19 +45,22 @@ const AudioPlayer = () => {
     if (audioRef.current) {
       audioRef.current.pause();
       setIsPlaying(false);
+      setIsLoading(true);
     }
-  }, [surahsIndex, ayahsIndex]);
+    console.log(reader);
+  }, [surahsIndex, ayahsIndex, reader]);
 
   return (
     <div
-      role="region" // Defines the region of the page for screen readers
-      aria-live="polite" // Announces updates politely to assistive technologies
-      aria-labelledby="audio-player-heading" // Associates with a heading for context
+      role="region"
+      aria-live="polite"
+      aria-labelledby="audio-player-heading"
       className="flex flex-col items-center"
     >
       <h2 id="audio-player-heading" className="sr-only">
         Audio Player
       </h2>
+      <ReaderSelector />
       <button
         className={`w-16 h-16 flex justify-center items-center rounded-full mx-auto ${
           isLoading ? "animate-spin" : ""
@@ -82,7 +85,7 @@ const AudioPlayer = () => {
         onCanPlay={handleCanPlay}
         onWaiting={handleWaiting}
         onEnded={handleEnded}
-        aria-hidden="true" // Hide the default audio controls
+        aria-hidden="true"
       ></audio>
     </div>
   );

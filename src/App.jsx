@@ -1,37 +1,13 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchSurah } from "./features/ayahsSlice";
+import { useState } from "react";
 import Card from "./components/Card";
-import { Loader } from "./components/Loader";
 import AudioPlayer from "./components/AudioPlayer";
 import Footer from "./components/Footer";
 
 function App() {
   const [mode, setMode] = useState(false);
-  const dispatch = useDispatch();
-  const { surahsIndex, status, error } = useSelector((state) => state.ayahs);
-
-  useEffect(() => {
-    dispatch(fetchSurah());
-  }, [surahsIndex, dispatch]);
-
   const handleModeToggle = () => {
     setMode((prevMode) => !prevMode);
   };
-
-  if (status === "loading") {
-    return <Loader />;
-  }
-
-  if (status === "failed") {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <p className="text-red-500">Error loading data: {error}</p>
-      </div>
-    );
-  }
-
   return (
     <div className={`${mode ? "" : "dark"}`}>
       <div

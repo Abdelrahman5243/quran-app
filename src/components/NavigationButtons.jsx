@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { navigate } from "../features/ayahsSlice";
 
@@ -37,4 +37,4 @@ const NavigationButtons = ({ children }) => {
   );
 };
 
-export default React.memo(NavigationButtons);
+export default NavigationButtons;

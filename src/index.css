@@ -2,47 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
-    transition: ease 0.1s;
+* {
+  transition: ease 0.1s;
 }
-  .loader {
-    height: 27.5;
-    width: 55px;
-    transform-origin: center;
-    overflow: visible;
-  }
+.loader {
+  height: 27.5;
+  width: 55px;
+  transform-origin: center;
+  overflow: visible;
+}
 
-  .car {
-    fill: none;
-    stroke: black;
-    stroke-dasharray: 15, 85;
+.car {
+  fill: none;
+  stroke: black;
+  stroke-dasharray: 15, 85;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  animation: travel 1.3s linear infinite;
+  will-change: stroke-dasharray, stroke-dashoffset;
+  transition: stroke 0.5s ease;
+}
+
+.track {
+  stroke: black;
+  opacity: 0.1;
+}
+
+@keyframes travel {
+  0% {
     stroke-dashoffset: 0;
-    stroke-linecap: round;
-    animation: travel 1.3s linear infinite;
-    will-change: stroke-dasharray, stroke-dashoffset;
-    transition: stroke 0.5s ease;
   }
 
-  .track {
-    stroke: black;
-    opacity: 0.1;
+  100% {
+    stroke-dashoffset: 100;
   }
+}
 
-  @keyframes travel {
-    0% {
-      stroke-dashoffset: 0;
-    }
-
-    100% {
-      stroke-dashoffset: 100;
-    }
-  }
-
-  .select {
+.select {
   position: relative;
 }
 
-.select select {
+select {
   appearance: none;
   padding: 0.5rem 1rem;
   background-color: transparent;
@@ -53,13 +53,11 @@
   outline: none;
 }
 
-.select select option {
+select option {
   background-color: transparent;
   color: #4b5563;
 }
-
-.select select:focus {
+select:focus {
   border-color: #6b7280;
   box-shadow: 0 0 0 1px #6b7280;
 }
-

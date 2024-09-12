@@ -1,7 +1,7 @@
-import React from "react";
 import NavigationButtons from "./NavigationButtons";
 import AyahContent from "./AyahContent";
-import OptionSelectors from "./OptionSelectors";
+import SurahSelector from "./SurahSelector";
+import AyahSelector from "./AyahSelector";
 
 const Card = () => {
   return (
@@ -9,7 +9,10 @@ const Card = () => {
       <NavigationButtons>
         <div className="card ring-2 ring-gray-200 dark:ring-0 text-center bg-light-2 rounded-lg dark:bg-dark-2 flex flex-col w-full font-medium text-2xl md:text-lg">
           <AyahContent />
-          <OptionSelectors />
+          <div className="select p-5 w-full flex justify-between">
+            <SurahSelector />
+            <AyahSelector />
+          </div>
         </div>
       </NavigationButtons>
     </div>

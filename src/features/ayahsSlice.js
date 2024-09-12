@@ -7,13 +7,14 @@ export const fetchSurah = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     const state = getState();
     const surahNumber = state.ayahs.surahsIndex;
+    const reader = state.ayahs.reader;
 
     if (!surahNumber) {
       return rejectWithValue("Invalid surah number");
     }
 
     try {
-      const response = await fetch(`${apiUrl}/${surahNumber}/ar.alafasy`);
+      const response = await fetch(`${apiUrl}/${surahNumber}/${reader}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -41,6 +42,7 @@ const ayahsSlice = createSlice({
     currentSurah: null, // Data for the current surah
     surahsIndex: parseInt(localStorage.getItem("surahsIndex"), 10) || 1,
     ayahsIndex: parseInt(localStorage.getItem("ayahsIndex"), 10) || 0,
+    reader: localStorage.getItem("reader") || "ar.alafasy", // Default reader
     status: "idle",
     error: null,
   },
@@ -52,6 +54,10 @@ const ayahsSlice = createSlice({
     setAyahsIndex: (state, action) => {
       state.ayahsIndex = action.payload;
       localStorage.setItem("ayahsIndex", action.payload);
+    },
+    setReader: (state, action) => {
+      state.reader = action.payload;
+      localStorage.setItem("reader", action.payload);
     },
     navigate: (state, action) => {
       const { direction } = action.payload;
@@ -70,7 +76,7 @@ const ayahsSlice = createSlice({
           updateIndices(state.surahsIndex, currentAyahIndex - 1);
         } else if (state.surahsIndex > 1) {
           const prevSurahIndex = state.surahsIndex - 1;
-          updateIndices(prevSurahIndex,0); // to the previous surah
+          updateIndices(prevSurahIndex, 0); // Navigate to the previous surah
         }
       } else if (direction === "right") {
         if (currentAyahIndex < (currentSurah?.ayahs.length || 0) - 1) {
@@ -99,6 +105,7 @@ const ayahsSlice = createSlice({
   },
 });
 
-export const { setSurahsIndex, setAyahsIndex, navigate } = ayahsSlice.actions;
+export const { setSurahsIndex, setAyahsIndex, setReader, navigate } =
+  ayahsSlice.actions;
 
 export default ayahsSlice.reducer;
