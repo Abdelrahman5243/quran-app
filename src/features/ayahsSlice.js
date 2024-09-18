@@ -29,7 +29,7 @@ export const fetchSurah = createAsyncThunk(
       // Update localStorage with the current surahsIndex
       localStorage.setItem("surahsIndex", surahNumber);
 
-      return { ayahs }; // Returning the modified data structure
+      return { ayahs };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -39,7 +39,7 @@ export const fetchSurah = createAsyncThunk(
 const ayahsSlice = createSlice({
   name: "ayahs",
   initialState: {
-    currentSurah: null, // Data for the current surah
+    currentSurah: null,
     surahsIndex: parseInt(localStorage.getItem("surahsIndex"), 10) || 1,
     ayahsIndex: parseInt(localStorage.getItem("ayahsIndex"), 10) || 0,
     reader: localStorage.getItem("reader") || "ar.alafasy", // Default reader

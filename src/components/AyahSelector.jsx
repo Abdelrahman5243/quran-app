@@ -1,4 +1,3 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAyahsIndex } from "../features/ayahsSlice";
 import Selector from "./common/Selector";

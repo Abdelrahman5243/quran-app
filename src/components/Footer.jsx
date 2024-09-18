@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className=" w-full bg-light-2 dark:bg-dark-2 text-center py-4 shadow-md">
       <p className="text-sm">
-        Using{" "}
+        Using
         <a
           href="https://alquran.cloud"
           target="_blank"
