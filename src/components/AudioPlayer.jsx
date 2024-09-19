@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { navigate } from "../features/ayahsSlice";
+import { navigate, fetchSurah } from "../features/ayahsSlice";
 import ReaderSelector from "./ReaderSelector";
 
 const AudioPlayer = () => {
@@ -33,6 +33,8 @@ const AudioPlayer = () => {
   const handleEnded = async () => {
     if (!(surahsIndex === 114 && ayahsIndex === 5)) {
       await dispatch(navigate({ direction: "right" }));
+            await dispatch(fetchSurah());
+
       audioRef.current.play();
       setIsPlaying(true);
     } else {
