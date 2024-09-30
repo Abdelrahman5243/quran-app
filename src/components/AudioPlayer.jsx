@@ -4,7 +4,7 @@ import { navigate } from "../features/ayahsSlice";
 import ReaderSelector from "./ReaderSelector";
 
 const AudioPlayer = () => {
-  const { surahsIndex, ayahsIndex, currentSurah, reader } = useSelector(
+  const { surahsIndex, ayahsIndex, currentSurah, reader, status } = useSelector(
     (state) => state.ayahs
   );
   const ayahAudio = currentSurah?.ayahs[ayahsIndex]?.audio;
@@ -14,6 +14,8 @@ const AudioPlayer = () => {
   const audioRef = useRef(null);
 
   const togglePlayPause = () => {
+    if (!audioRef.current) return; // Check if audioRef is not null
+
     if (isPlaying) {
       audioRef.current.pause();
     } else {
@@ -39,29 +41,28 @@ const AudioPlayer = () => {
   };
 
   const handleEnded = async () => {
-    // Skip navigation if it's the last ayah in the last surah
     if (surahsIndex === 114 && ayahsIndex === 5) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      return;
+      return; // Do nothing if it's the last ayah
     }
 
     // Pause audio and set loading state before navigation
-    audioRef.current.pause();
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
     setIsPlaying(false);
     setIsLoading(true);
-
-    // Navigate to the next Ayah
     dispatch(navigate({ direction: "right" }));
 
     // Wait for the new audio to be ready before playing
     const handleAudioReady = () => {
       setIsLoading(false);
-      audioRef.current.play().catch((error) => {
-        console.error("Playback failed:", error);
-      });
-      setIsPlaying(true);
-      audioRef.current.removeEventListener("canplay", handleAudioReady);
+      if (audioRef.current) {
+        audioRef.current.play().catch((error) => {
+          console.error("Playback failed:", error);
+        });
+        setIsPlaying(true);
+        audioRef.current.removeEventListener("canplay", handleAudioReady);
+      }
     };
 
     if (audioRef.current) {
@@ -70,44 +71,35 @@ const AudioPlayer = () => {
   };
 
   useEffect(() => {
-    const currentAudioRef = audioRef.current; // Copy the current ref value
-
-    // Initial pause
-    if (currentAudioRef) {
-      currentAudioRef.pause();
+    if (audioRef.current) {
+      audioRef.current.pause();
       setIsPlaying(false);
       setIsLoading(true);
     }
 
     return () => {
-      if (currentAudioRef) {
-        // Cleanup listeners
-        currentAudioRef.removeEventListener("canplay", handleCanPlay);
-        currentAudioRef.removeEventListener("error", handleError);
+      if (audioRef.current) {
+        audioRef.current.removeEventListener("canplay", handleCanPlay);
+        audioRef.current.removeEventListener("error", handleError);
       }
     };
   }, [surahsIndex, ayahsIndex, reader]);
 
   useEffect(() => {
-    const currentAudioRef = audioRef.current; // Copy the current ref value
+    if (audioRef.current) {
+      const handleAudioReady = () => {
+        setIsLoading(false);
+      };
 
-    const handleAudioReady = () => {
-      setIsLoading(false);
-      // Do not automatically play audio; wait for user interaction
-    };
+      audioRef.current.addEventListener("canplay", handleAudioReady);
+      audioRef.current.addEventListener("error", handleError);
 
-    if (currentAudioRef) {
-      currentAudioRef.addEventListener("canplay", handleAudioReady);
-      currentAudioRef.addEventListener("error", handleError);
+      // Clean up event listeners on component unmount or re-render
+      return () => {
+        audioRef.current.removeEventListener("canplay", handleAudioReady);
+        audioRef.current.removeEventListener("error", handleError);
+      };
     }
-
-    // Clean up event listeners on component unmount or re-render
-    return () => {
-      if (currentAudioRef) {
-        currentAudioRef.removeEventListener("canplay", handleAudioReady);
-        currentAudioRef.removeEventListener("error", handleError);
-      }
-    };
   }, [ayahAudio]);
 
   return (
@@ -137,7 +129,7 @@ const AudioPlayer = () => {
           <i className="ri-play-circle-fill text-5xl" aria-hidden="true"></i>
         )}
       </button>
-      {ayahAudio && (
+      {ayahAudio && status === "succeeded" && (
         <audio
           ref={audioRef}
           src={ayahAudio}
