@@ -1,13 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Card from "./components/Card";
 import AudioPlayer from "./components/AudioPlayer";
 import Footer from "./components/Footer";
+import { useSelector, useDispatch } from "react-redux";
+import { navigate, fetchSurah } from "./features/ayahsSlice";
 
 function App() {
   const [mode, setMode] = useState(false);
   const handleModeToggle = () => {
     setMode((prevMode) => !prevMode);
   };
+  const { surahsIndex, ayahsIndex, currentSurah, reader } = useSelector(
+    (state) => state.ayahs
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchSurah());
+  }, [dispatch, surahsIndex, reader]);
+
   return (
     <div className={`${mode ? "" : "dark"}`}>
       <div

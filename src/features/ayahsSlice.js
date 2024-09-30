@@ -42,7 +42,7 @@ const ayahsSlice = createSlice({
     currentSurah: null,
     surahsIndex: parseInt(localStorage.getItem("surahsIndex"), 10) || 1,
     ayahsIndex: parseInt(localStorage.getItem("ayahsIndex"), 10) || 0,
-    reader: localStorage.getItem("reader") || "ar.alafasy", // Default reader
+    reader: localStorage.getItem("reader") || "ar.alafasy", 
     status: "idle",
     error: null,
   },
