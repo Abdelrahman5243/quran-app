@@ -18,20 +18,20 @@ const NavigationButtons = ({ children }) => {
     <div className="flex justify-center w-full items-center text-gray-600 dark:text-gray-100">
       <button
         className="cursor-pointer text-xl px-2 py-20"
-        onClick={leftMove}
-        aria-label="Navigate left"
+        onClick={rightMove}
+        aria-label="Navigate right"
       >
-        <i className="ri-arrow-left-wide-fill" aria-hidden="true"></i>
+        <i className="ri-arrow-right-wide-fill" aria-hidden="true"></i>
       </button>
 
       {children}
 
       <button
         className="cursor-pointer text-xl px-2 py-20"
-        onClick={rightMove}
-        aria-label="Navigate right"
+        onClick={leftMove}
+        aria-label="Navigate left"
       >
-        <i className="ri-arrow-right-wide-fill" aria-hidden="true"></i>
+        <i className="ri-arrow-left-wide-fill" aria-hidden="true"></i>
       </button>
     </div>
   );

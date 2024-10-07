@@ -5,6 +5,10 @@
 * {
   transition: 0.1s;
 }
+body {
+  direction: rtl;
+}
+
 .loader {
   height: 27.5;
   width: 55px;

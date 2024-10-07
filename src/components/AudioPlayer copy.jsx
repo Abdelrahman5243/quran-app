@@ -28,12 +28,8 @@ const AudioPlayer = () => {
 
     const onCanPlay = () => {
       setIsLoading(false);
-      audio
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(console.error);
+      audio.play().catch(console.error);
     };
-
     const onWaiting = () => setIsLoading(true);
     const onError = (error) => {
       if (error.name !== "AbortError") {
@@ -70,13 +66,10 @@ const AudioPlayer = () => {
 
     if (isPlaying) {
       audioRef.current.pause();
-      setIsPlaying(false);
     } else {
-      audioRef.current
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(console.error);
+      audioRef.current.play().catch(console.error);
     }
+    setIsPlaying(!isPlaying);
   };
 
   return (
@@ -84,20 +77,19 @@ const AudioPlayer = () => {
       <ReaderSelector />
       <div className="flex items-center space-x-4">
         <button
-          className="w-16 h-16 flex justify-center items-center rounded-full"
+          className={`w-16 h-16 flex justify-center items-center rounded-full ${
+            isLoading ? "animate-spin" : ""
+          }`}
           onClick={togglePlayPause}
           disabled={isLoading}
           aria-label={isPlaying ? "إيقاف مؤقت" : "تشغيل"}
         >
           {isLoading ? (
-            <i
-              className="ri-loader-2-line animate-spin text-5xl"
-              aria-hidden="true"
-            ></i>
+            <i className="ri-reset-right-line text-5xl" aria-hidden="true"></i>
           ) : isPlaying ? (
-            <i className="ri-pause-fill text-5xl" aria-hidden="true"></i>
+            <i className="ri-pause-circle-fill text-5xl" aria-hidden="true"></i>
           ) : (
-            <i className="ri-play-fill text-5xl" aria-hidden="true"></i>
+            <i className="ri-play-circle-fill text-5xl" aria-hidden="true"></i>
           )}
         </button>
       </div>
