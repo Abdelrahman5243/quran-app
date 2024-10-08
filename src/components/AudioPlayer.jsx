@@ -10,7 +10,7 @@ const AudioPlayer = () => {
   const ayahAudio = currentSurah?.ayahs[ayahsIndex]?.audio;
   const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef(null);
 
   const handleEnded = () => {
@@ -28,19 +28,18 @@ const AudioPlayer = () => {
 
     const onCanPlay = () => {
       setIsLoading(false);
-      audio
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(console.error);
+      if (isPlaying) {
+        audio
+          .play()
+          .catch((error) => console.error("Error playing audio:", error));
+      }
     };
 
     const onWaiting = () => setIsLoading(true);
     const onError = (error) => {
-      if (error.name !== "AbortError") {
-        setIsLoading(false);
-        setIsPlaying(false);
-        console.error("خطأ في تحميل الصوت:", error);
-      }
+      setIsLoading(false);
+      setIsPlaying(false);
+      console.error("Error loading audio:", error);
     };
 
     audio.addEventListener("canplay", onCanPlay);
@@ -54,16 +53,15 @@ const AudioPlayer = () => {
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("error", onError);
     };
-  }, [ayahAudio, surahsIndex, ayahsIndex, dispatch, handleEnded]);
+  }, [isPlaying, ayahAudio, surahsIndex, ayahsIndex, dispatch]);
 
   useEffect(() => {
-    if (!audioRef.current) return;
-
-    audioRef.current.pause();
-    setIsPlaying(false);
-    setIsLoading(true);
-    audioRef.current.src = ayahAudio;
-  }, [surahsIndex, ayahsIndex, reader, ayahAudio]);
+    if (ayahAudio && audioRef.current) {
+      setIsLoading(true);
+      audioRef.current.src = ayahAudio;
+      audioRef.current.load();
+    }
+  }, [ayahAudio]);
 
   const togglePlayPause = () => {
     if (!audioRef.current) return;
@@ -74,8 +72,14 @@ const AudioPlayer = () => {
     } else {
       audioRef.current
         .play()
-        .then(() => setIsPlaying(true))
-        .catch(console.error);
+        .then(() => {
+          setIsPlaying(true);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error playing audio:", error);
+          setIsLoading(false);
+        });
     }
   };
 
@@ -101,9 +105,7 @@ const AudioPlayer = () => {
           )}
         </button>
       </div>
-      {ayahAudio && (
-        <audio ref={audioRef} src={ayahAudio} preload="metadata"></audio>
-      )}
+      {ayahAudio && <audio ref={audioRef} preload="metadata"></audio>}
     </div>
   );
 };
