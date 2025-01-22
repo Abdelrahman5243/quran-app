@@ -57,7 +57,7 @@ select {
   appearance: none;
   padding: 0.5rem 1rem;
   border:solid 1px #e1e1e1;
-  background:transparent url(https://res.cloudinary.com/davmi4pnk/image/upload/v1737536289/chevron-down-solid_syuoq4.svg) no-repeat 90% 50% / 20px !important;
+  background:transparent url(https://res.cloudinary.com/davmi4pnk/image/upload/v1737536289/chevron-down-solid_syuoq4.svg) no-repeat 94% 50% / 20px !important;
   font-size: 1rem;
   cursor: pointer;
   border-radius: 0.25rem;
@@ -65,7 +65,7 @@ select {
 }
 
 .dark select{
-  background: transparent url(https://res.cloudinary.com/davmi4pnk/image/upload/v1737536289/chevron-down-solid_1_bfueg5.svg) no-repeat 90% 50% / 20px !important;
+  background: transparent url(https://res.cloudinary.com/davmi4pnk/image/upload/v1737536289/chevron-down-solid_1_bfueg5.svg) no-repeat 94% 50% / 20px !important;
 }
 
 select option {
