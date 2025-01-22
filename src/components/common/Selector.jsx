@@ -17,7 +17,6 @@ const Selector = ({ id, value, onChange, options, label, ariaLabel }) => {
           </option>
         ))}
       </select>
-      <i className="ri-arrow-down-s-fill ml-2 h-5 w-5 absolute top-2.5 right-1.5" aria-hidden="true"></i>
     </div>
   );
 };
