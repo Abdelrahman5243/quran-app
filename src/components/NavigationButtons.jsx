@@ -15,23 +15,25 @@ const NavigationButtons = ({ children }) => {
   }, [dispatch]);
 
   return (
-    <div className="flex justify-center w-full items-center text-gray-600 dark:text-gray-100">
+    <div className="flex justify-center w-full items-center gap-4">
       <button
-        className="cursor-pointer text-xl px-2 py-20"
+        className="cursor-pointer w-14 h-14 flex-shrink-0 flex items-center justify-center text-3xl rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all duration-300"
         onClick={rightMove}
         aria-label="Navigate right"
       >
-        <i className="ri-arrow-right-wide-fill" aria-hidden="true"></i>
+        <i className="ri-arrow-right-s-line" aria-hidden="true"></i>
       </button>
 
-      {children}
+      <div className="flex-1 max-w-4xl">
+        {children}
+      </div>
 
       <button
-        className="cursor-pointer text-xl px-2 py-20"
+        className="cursor-pointer w-14 h-14 flex-shrink-0 flex items-center justify-center text-3xl rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all duration-300"
         onClick={leftMove}
         aria-label="Navigate left"
       >
-        <i className="ri-arrow-left-wide-fill" aria-hidden="true"></i>
+        <i className="ri-arrow-left-s-line" aria-hidden="true"></i>
       </button>
     </div>
   );

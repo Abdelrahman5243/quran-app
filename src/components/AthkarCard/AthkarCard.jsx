@@ -26,11 +26,10 @@ const AthkarCard = ({ content, count }) => {
 
   const cardClasses = useMemo(
     () =>
-      `flex justify-between items-center gap-8 p-4 bg-light-2 dark:bg-dark-2 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-light-1 
-      dark:hover:bg-dark-1 outline-none ${
+      `flex justify-between items-center gap-8 p-8 backdrop-blur-xl bg-white/40 dark:bg-black/40 rounded-[2rem] cursor-pointer transition-all duration-500 border border-white/30 dark:border-white/10 hover:bg-white/50 dark:hover:bg-black/50 hover:translate-y-[-4px] outline-none ${
         currentCount === 0
-          ? "border-2 border-green-500"
-          : "border-2 dark:border-dark-2 border-light-2"
+          ? "border-emerald-500/50 bg-emerald-500/10"
+          : "hover:border-emerald-500/30"
       }`,
     [currentCount]
   );
@@ -43,13 +42,15 @@ const AthkarCard = ({ content, count }) => {
       tabIndex={0}
       aria-label="Athkar card"
     >
-      <p className="text-dark-1 dark:text-light-1">{content}</p>
-      <div className="flex flex-col gap-4 items-center bg-light-1 dark:bg-dark-1 p-2 rounded min-w-24">
-        <p className="text-dark-1 dark:text-light-1 font-bold text-xl px-4 select-none">
+      <p className="text-dark-1 dark:text-light-1 text-lg md:text-xl leading-relaxed font-arabic flex-1">
+        {content}
+      </p>
+      <div className="flex flex-col gap-3 items-center bg-white/40 dark:bg-black/40 backdrop-blur-sm p-4 rounded-xl min-w-28 border border-white/20">
+        <p className="text-emerald-600 dark:text-emerald-400 font-bold text-3xl select-none">
           {currentCount}
         </p>
-        <div className="flex justify-between w-full items-center">
-          <p className="text-dark-1 dark:text-light-1 opacity-20 font-bold text-xl select-none">
+        <div className="flex items-center justify-center gap-4 w-full border-t border-emerald-500/10 pt-2">
+          <p className="text-dark-1 dark:text-light-1 opacity-30 font-semibold text-lg select-none">
             {count}
           </p>
           <button
@@ -57,7 +58,7 @@ const AthkarCard = ({ content, count }) => {
             onKeyDown={(e) => e.key === "Enter" && countReset(e)}
             tabIndex={0}
             aria-label="Reset counter"
-            className="text-dark-1 dark:text-light-1 opacity-75 hover:opacity-100 focus:outline-none"
+            className="text-emerald-600 dark:text-emerald-400 opacity-60 hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-emerald-500/10"
           >
             <i className="ri-arrow-go-forward-line"></i>
           </button>

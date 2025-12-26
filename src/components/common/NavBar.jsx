@@ -23,14 +23,14 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="bg-light-1 dark:bg-dark-1">
+    <nav className="sticky top-0 z-50 backdrop-blur-lg bg-white/60 dark:bg-black/40 border-b border-white/20 dark:border-white/10 transition-all duration-300">
       <div className="mx-auto container py-3 px-6">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             <button
               type="button"
-              className="relative inline-flex items-center justify-center rounded-md p-2
-               text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1 outline-none"
+              className="relative inline-flex items-center justify-center rounded-full p-2
+               text-dark-1 dark:text-light-1 hover:bg-emerald-500/10 transition-all duration-300 outline-none"
               onClick={toggleMobileMenu}
               aria-controls="mobile-menu"
               aria-expanded={isMobileMenuOpen}
@@ -50,10 +50,10 @@ const NavBar = () => {
                 <NavLink
                   to="/"
                   className={({ isActive }) =>
-                    `rounded-md p-3 px-4 text-sm font-medium ${
+                    `rounded-xl p-3 px-6 text-sm font-semibold transition-all duration-300 ${
                       isActive
-                        ? "bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1"
-                        : "text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1"
+                        ? "bg-emerald-500 text-white"
+                        : "text-dark-1 dark:text-light-1 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
                     }`
                   }
                 >
@@ -62,10 +62,10 @@ const NavBar = () => {
                 <NavLink
                   to="/athkar"
                   className={({ isActive }) =>
-                    `rounded-md p-3 px-4 text-sm font-medium ${
+                    `rounded-xl p-3 px-6 text-sm font-semibold transition-all duration-300 ${
                       isActive
-                        ? "bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1"
-                        : "text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1"
+                        ? "bg-emerald-500 text-white"
+                        : "text-dark-1 dark:text-light-1 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
                     }`
                   }
                 >
@@ -77,7 +77,7 @@ const NavBar = () => {
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <button
               type="button"
-              className="relative p-1 text-dark-1 dark:text-light-1 outline-none"
+              className="relative w-10 h-10 flex-shrink-0 flex items-center justify-center text-dark-1 dark:text-light-1 hover:bg-emerald-500/10 dark:hover:bg-emerald-500/10 rounded-full transition-all duration-300 outline-none group"
               onClick={toggleDarkMode}
               aria-label={`التبديل إلى الوضع ${
                 isDarkMode ? "الفاتح" : "الداكن"
@@ -86,7 +86,7 @@ const NavBar = () => {
               <span className="absolute -inset-1.5"></span>
               <span className="sr-only">تغيير الوضع</span>
               <i
-                className={`ri-${isDarkMode ? "sun" : "moon"}-line h-6 w-6`}
+                className={`ri-${isDarkMode ? "sun" : "moon"}-line h-6 w-6 group-hover:rotate-12 transition-transform`}
                 aria-hidden="true"
               ></i>
             </button>
@@ -102,10 +102,10 @@ const NavBar = () => {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `block rounded-md px-3 py-2 text-base font-medium ${
+              `block rounded-xl px-4 py-3 text-base font-semibold transition-all duration-300 ${
                 isActive
-                  ? "bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1"
-                  : "text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1"
+                  ? "bg-emerald-500 text-white"
+                  : "text-dark-1 dark:text-light-1 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
               }`
             }
           >
@@ -114,10 +114,10 @@ const NavBar = () => {
           <NavLink
             to="/athkar"
             className={({ isActive }) =>
-              `block rounded-md px-3 py-2 text-base font-medium ${
+              `block rounded-xl px-4 py-3 text-base font-semibold transition-all duration-300 ${
                 isActive
-                  ? "bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1"
-                  : "text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1"
+                  ? "bg-emerald-500 text-white"
+                  : "text-dark-1 dark:text-light-1 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
               }`
             }
           >

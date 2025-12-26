@@ -9,11 +9,61 @@
    font-style: normal;
  }
 }
+
 * {
   transition: 0.1s;
 }
+
 body {
   direction: rtl;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.3); /* Emerald-500 with opacity */
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.6);
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(52, 211, 153, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(52, 211, 153, 0.4);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .loader {
@@ -53,26 +103,10 @@ body {
   position: relative;
 }
 
-select {
-  appearance: none;
-  padding: 0.5rem 1rem;
-  border:solid 1px #e1e1e1;
-  background:transparent url(https://res.cloudinary.com/davmi4pnk/image/upload/v1737536289/chevron-down-solid_syuoq4.svg) no-repeat 94% 50% / 20px !important;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 0.25rem;
-  outline: none;
-}
-
-.dark select{
-  background: transparent url(https://res.cloudinary.com/davmi4pnk/image/upload/v1737536289/chevron-down-solid_1_bfueg5.svg) no-repeat 94% 50% / 20px !important;
-}
-
 select option {
   background-color: transparent;
   color: #4b5563;
 }
 select:focus {
-  border-color: #6b728080;
-  box-shadow: 0 0 0 1px #6b7280b0;
+  outline: none;
 }

@@ -84,24 +84,24 @@ const AudioPlayer = () => {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center gap-8 mt-4">
       <ReaderSelector />
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center">
         <button
-          className="w-16 h-16 flex justify-center items-center rounded-full"
+          className="w-20 h-20 flex-shrink-0 flex justify-center items-center rounded-full bg-emerald-500 text-white transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:bg-emerald-300"
           onClick={togglePlayPause}
           disabled={isLoading}
           aria-label={isPlaying ? "إيقاف مؤقت" : "تشغيل"}
         >
           {isLoading ? (
             <i
-              className="ri-loader-2-line animate-spin text-5xl"
+              className="ri-loader-2-line animate-spin text-4xl"
               aria-hidden="true"
             ></i>
           ) : isPlaying ? (
-            <i className="ri-pause-fill text-5xl" aria-hidden="true"></i>
+            <i className="ri-pause-fill text-4xl" aria-hidden="true"></i>
           ) : (
-            <i className="ri-play-fill text-5xl" aria-hidden="true"></i>
+            <i className="ri-play-fill text-4xl" aria-hidden="true"></i>
           )}
         </button>
       </div>
