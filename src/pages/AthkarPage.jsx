@@ -136,11 +136,11 @@ const AthkarPage = () => {
       ) : (
         <div className="w-full max-w-5xl flex flex-col gap-8 animate-fade-in px-2 md:px-0">
           {/* Progress Overview */}
-          <div className="glass-card p-6 rounded-3xl mb-4 border border-emerald-500/20 bg-emerald-500/5 backdrop-blur-md">
+          <div className="glass-card p-6 rounded-3xl mb-4 border border-emerald-500/20 bg-white/40 dark:bg-emerald-500/5 shadow-sm">
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h3 className="text-2xl font-black text-slate-800 dark:text-white">إنجازك اليوم</h3>
-                <p className="text-slate-500 dark:text-slate-400 font-bold">لقد قرأت {completedCount} من أصل {totalCount}</p>
+                <p className="text-slate-600 dark:text-slate-300 font-bold">لقد قرأت {completedCount} من أصل {totalCount}</p>
               </div>
               <div className="w-20 h-20 relative flex items-center justify-center">
                 <svg className="w-full h-full transform -rotate-90">
@@ -151,7 +151,7 @@ const AthkarPage = () => {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="6"
-                    className="text-slate-200 dark:text-slate-700"
+                    className="text-slate-200 dark:text-slate-800"
                   />
                   <circle
                     cx="40"
@@ -171,9 +171,9 @@ const AthkarPage = () => {
                 </span>
               </div>
             </div>
-            <div className="h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mb-4">
+            <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden mb-4">
               <div 
-                className="h-full bg-emerald-500 transition-all duration-1000" 
+                className="h-full bg-emerald-500 transition-all duration-1000 shadow-[0_0_8px_rgba(16,185,129,0.3)]" 
                 style={{ width: `${(completedCount / (totalCount || 1)) * 100}%` }}
               ></div>
             </div>
@@ -191,7 +191,7 @@ const AthkarPage = () => {
                      });
                    }
                 }}
-                className="text-xs font-bold text-slate-400 hover:text-emerald-500 transition-colors flex items-center gap-1"
+                className="text-xs font-bold text-slate-400 dark:text-slate-500 hover:text-emerald-500 transition-colors flex items-center gap-1"
               >
                 <i className="ri-refresh-line"></i>
                 إعادة تعيين التقدم

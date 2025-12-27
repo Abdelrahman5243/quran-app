@@ -23,11 +23,15 @@
 
 @layer components {
   .glass-card {
-    @apply backdrop-blur-lg bg-white/40 dark:bg-black/40 border border-white/30 dark:border-white/10 shadow-2xl;
+    @apply bg-white/40 dark:bg-black/40 border border-white/30 dark:border-white/10 shadow-2xl transition-all duration-300;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   
   .glass-button {
-    @apply backdrop-blur-lg bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/30 transition-all duration-300;
+    @apply bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/30 transition-all duration-300;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
 }
 

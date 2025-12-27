@@ -36,7 +36,7 @@ const AthkarCard = ({ content, count, initialCount, onCountChange }) => {
     () =>
       `glass-card flex flex-col md:flex-row justify-between items-center gap-8 p-8 rounded-[2.5rem] cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-emerald-500/20 active:scale-[0.98] outline-none group ${
         currentCount === 0
-          ? "border-emerald-500/50 bg-emerald-500/5 dark:bg-emerald-500/10 shadow-emerald-500/10"
+          ? "border-emerald-500/40 bg-emerald-500/10 dark:bg-emerald-500/20 shadow-lg shadow-emerald-500/5"
           : "hover:border-emerald-500/30"
       }`,
     [currentCount]
@@ -52,14 +52,17 @@ const AthkarCard = ({ content, count, initialCount, onCountChange }) => {
     >
       {/* Arabic Text Section */}
       <div className="flex-1 text-right">
-        <p className={`text-slate-800 dark:text-slate-100 text-xl md:text-2xl lg:text-3xl leading-relaxed font-arabic transition-all duration-700 ${currentCount === 0 ? 'opacity-30 grayscale-[50%]' : ''}`}>
+        <p className={`text-slate-800 dark:text-slate-100 text-xl md:text-2xl lg:text-3xl leading-relaxed font-arabic transition-all duration-700 ${currentCount === 0 ? 'opacity-60' : ''}`}>
           {content}
         </p>
       </div>
 
       {/* Counter Box Section */}
       <div className="shrink-0 mt-4 md:mt-0 relative">
-        <div className="w-[130px] md:w-[150px] bg-white/70 dark:bg-black/40 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-[2.2rem] shadow-xl overflow-hidden transition-all duration-500 group-hover:scale-105 group-hover:shadow-emerald-500/10">
+        <div 
+          className="w-[130px] md:w-[150px] bg-white/70 dark:bg-black/60 border border-white/40 dark:border-white/10 rounded-[2.2rem] shadow-xl overflow-hidden transition-all duration-500 group-hover:scale-105 group-hover:shadow-emerald-500/10"
+          style={{ backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
+        >
           <div className="py-6 flex flex-col items-center justify-center">
             <span className="text-[10px] uppercase tracking-widest text-emerald-600/70 dark:text-emerald-400/70 font-black mb-1">المتبقي</span>
             <p className={`text-5xl md:text-6xl font-bold transition-all duration-500 ${currentCount === 0 ? 'text-emerald-500 scale-110' : 'text-emerald-600 dark:text-emerald-400'}`}>
