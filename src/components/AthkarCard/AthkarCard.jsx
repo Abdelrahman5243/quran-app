@@ -1,18 +1,26 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 
-const AthkarCard = ({ content, count }) => {
-  const [currentCount, setCurrentCount] = useState(count);
+const AthkarCard = ({ content, count, initialCount, onCountChange }) => {
+  const [currentCount, setCurrentCount] = useState(initialCount ?? count);
+
+  // Update internal state if external initialCount changes (e.g. daily reset)
+  useEffect(() => {
+    setCurrentCount(initialCount ?? count);
+  }, [initialCount, count]);
 
   const countDown = useCallback(() => {
     if (currentCount > 0) {
-      setCurrentCount((prevCount) => prevCount - 1);
+      const nextCount = currentCount - 1;
+      setCurrentCount(nextCount);
+      onCountChange?.(nextCount);
     }
-  }, [currentCount]);
+  }, [currentCount, onCountChange]);
 
   const countReset = useCallback((event) => {
     event.stopPropagation();
     setCurrentCount(count);
-  }, [count]);
+    onCountChange?.(count);
+  }, [count, onCountChange]);
 
   const handleKeyDown = useCallback(
     (event) => {

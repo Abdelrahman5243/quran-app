@@ -25,7 +25,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="/athkar" element={<AthkarPage />} />
+            <Route path="/athkar/:type?" element={<AthkarPage />} />
           </Route>
         </Routes>
       </Suspense>
