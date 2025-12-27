@@ -1,112 +1,100 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer {
-  @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap');
- p{
-   font-family: "Amiri Quran", serif;
-   font-weight: 400;
-   font-style: normal;
- }
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --primary: 16 185 129; /* Emerald-500 */
+    --primary-light: 52 211 153; /* Emerald-400 */
+  }
+
+  body {
+    direction: rtl;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply antialiased text-slate-900 dark:text-slate-50 selection:bg-emerald-500/30;
+  }
+
+  .font-arabic {
+    font-family: "Amiri Quran", serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-lg bg-white/40 dark:bg-black/40 border border-white/30 dark:border-white/10 shadow-2xl;
+  }
+  
+  .glass-button {
+    @apply backdrop-blur-lg bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/30 transition-all duration-300;
+  }
 }
 
 * {
-  transition: 0.1s;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-body {
-  direction: rtl;
+/* Fluid Typography */
+.text-fluid-base {
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
 }
 
-/* Custom Scrollbar Styles */
+.text-fluid-lg {
+  font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+}
+
+.text-fluid-xl {
+  font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+}
+
+.text-fluid-quran {
+  font-size: clamp(1.75rem, 1.2rem + 2.5vw, 3.5rem);
+  line-height: 1.6;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.3); /* Emerald-500 with opacity */
+  background: rgba(var(--primary), 0.2);
   border-radius: 10px;
-  transition: background 0.3s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.6);
+  background: rgba(var(--primary), 0.5);
 }
 
-/* Dark mode scrollbar */
-.dark ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(52, 211, 153, 0.2);
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
 }
 
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(52, 211, 153, 0.4);
+.animate-pulse-subtle {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
-}
-
-.loader {
-  height: 27.5;
-  width: 55px;
-  transform-origin: center;
-  overflow: visible;
-}
-
-.car {
-  fill: none;
-  stroke: black;
-  stroke-dasharray: 15, 85;
-  stroke-dashoffset: 0;
-  stroke-linecap: round;
-  animation: travel 1.3s linear infinite;
-  will-change: stroke-dasharray, stroke-dashoffset;
-  transition: stroke 0.5s ease;
-}
-
-.track {
-  stroke: black;
-  opacity: 0.1;
-}
-
-@keyframes travel {
-  0% {
-    stroke-dashoffset: 0;
-  }
-
-  100% {
-    stroke-dashoffset: 100;
-  }
-}
-
-.select {
-  position: relative;
+/* Select custom styles */
+select {
+  @apply cursor-pointer outline-none appearance-none;
 }
 
 select option {
-  background-color: transparent;
-  color: #4b5563;
-}
-select:focus {
-  outline: none;
+  @apply bg-white dark:bg-slate-900;
 }

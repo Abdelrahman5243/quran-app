@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div
-      className="min-h-screen bg-light-1 dark:bg-dark-1 flex flex-col justify-between text-dark-1 dark:text-light-2 bg-cover bg-center bg-no-repeat bg-fixed"
+      className="min-h-screen bg-light-1/50 dark:bg-dark-1/50 bg-blend-multiply flex flex-col justify-between text-dark-1 dark:text-light-2 bg-cover bg-center bg-no-repeat bg-fixed"
       style={{ backgroundImage: 'url("/islamic-bg.png")' }}
     >
       <Suspense fallback={<Loader />}>
