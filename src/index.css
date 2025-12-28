@@ -1,19 +1,78 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer {
-  @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap');
- p{
-   font-family: "Amiri Quran", serif;
-   font-weight: 400;
-   font-style: normal;
- }
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --primary: 16 185 129; /* Emerald-500 */
+    --primary-light: 52 211 153; /* Emerald-400 */
+  }
+
+  body {
+    direction: rtl;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply antialiased text-slate-900 dark:text-slate-50 selection:bg-emerald-500/30;
+  }
+
+  .font-arabic {
+    font-family: "Amiri Quran", serif;
+  }
 }
+
+@layer components {
+  .glass-card {
+    @apply bg-white/40 dark:bg-black/40 border border-white/30 dark:border-white/10 shadow-2xl transition-all duration-300;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .glass-button {
+    @apply bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/30 transition-all duration-300;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
 * {
-  transition: 0.1s;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-body {
-  direction: rtl;
+
+/* Fluid Typography */
+.text-fluid-base {
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
+}
+
+.text-fluid-lg {
+  font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+}
+
+.text-fluid-xl {
+  font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+}
+
+.text-fluid-quran {
+  font-size: clamp(1.75rem, 1.2rem + 2.5vw, 3.5rem);
+  line-height: 1.6;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary), 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary), 0.5);
 }
 
 .loader {
@@ -49,30 +108,30 @@ body {
   }
 }
 
-.select {
-  position: relative;
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-pulse-subtle {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Select custom styles */
 select {
-  appearance: none;
-  padding: 0.5rem 1rem;
-  border:solid 1px #e1e1e1;
-  background:transparent url(https://res.cloudinary.com/davmi4pnk/image/upload/v1737536289/chevron-down-solid_syuoq4.svg) no-repeat 94% 50% / 20px !important;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 0.25rem;
-  outline: none;
-}
-
-.dark select{
-  background: transparent url(https://res.cloudinary.com/davmi4pnk/image/upload/v1737536289/chevron-down-solid_1_bfueg5.svg) no-repeat 94% 50% / 20px !important;
+  @apply cursor-pointer outline-none appearance-none;
 }
 
 select option {
-  background-color: transparent;
-  color: #4b5563;
-}
-select:focus {
-  border-color: #6b728080;
-  box-shadow: 0 0 0 1px #6b7280b0;
+  @apply bg-white dark:bg-slate-900;
 }

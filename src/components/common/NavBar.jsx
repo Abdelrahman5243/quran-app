@@ -7,8 +7,9 @@ const NavBar = () => {
 
   useEffect(() => {
     const savedMode = localStorage.getItem("darkMode");
-    setIsDarkMode(savedMode === "true");
-    document.documentElement.classList.toggle("dark", savedMode === "true");
+    const mode = savedMode === "true";
+    setIsDarkMode(mode);
+    document.documentElement.classList.toggle("dark", mode);
   }, []);
 
   const toggleMobileMenu = () => {
@@ -23,37 +24,36 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="bg-light-1 dark:bg-dark-1">
-      <div className="mx-auto container py-3 px-6">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+    <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/70 dark:bg-black/50 border-b border-white/20 dark:border-white/10 transition-all duration-300">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative flex h-20 items-center justify-between">
+          <div className="flex items-center sm:hidden">
             <button
               type="button"
-              className="relative inline-flex items-center justify-center rounded-md p-2
-               text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1 outline-none"
+              className="glass-button w-10 h-10 flex items-center justify-center rounded-xl text-slate-700 dark:text-slate-200"
               onClick={toggleMobileMenu}
               aria-controls="mobile-menu"
               aria-expanded={isMobileMenuOpen}
             >
-              <span className="absolute -inset-0.5"></span>
               <span className="sr-only">افتح القائمة الرئيسية</span>
               {isMobileMenuOpen ? (
-                <i className={`ri-close-line h-6 w-6`} aria-hidden="true"></i>
+                <i className="ri-close-line text-2xl" aria-hidden="true"></i>
               ) : (
-                <i className={`ri-menu-line h-6 w-6`} aria-hidden="true"></i>
+                <i className="ri-menu-line text-2xl" aria-hidden="true"></i>
               )}
             </button>
           </div>
+          
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="hidden sm:ml-6 sm:block">
-              <div className="flex gap-4">
+            <div className="hidden sm:block">
+              <div className="flex gap-2">
                 <NavLink
                   to="/"
                   className={({ isActive }) =>
-                    `rounded-md p-3 px-4 text-sm font-medium ${
+                    `rounded-xl px-4 md:px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
                       isActive
-                        ? "bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1"
-                        : "text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1"
+                        ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
                     }`
                   }
                 >
@@ -62,10 +62,10 @@ const NavBar = () => {
                 <NavLink
                   to="/athkar"
                   className={({ isActive }) =>
-                    `rounded-md p-3 px-4 text-sm font-medium ${
+                    `rounded-xl px-4 md:px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
                       isActive
-                        ? "bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1"
-                        : "text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1"
+                        ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
                     }`
                   }
                 >
@@ -74,19 +74,16 @@ const NavBar = () => {
               </div>
             </div>
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+          
+          <div className="flex items-center gap-4">
             <button
               type="button"
-              className="relative p-1 text-dark-1 dark:text-light-1 outline-none"
+              className="glass-button w-10 h-10 flex items-center justify-center rounded-full text-slate-700 dark:text-slate-200 group"
               onClick={toggleDarkMode}
-              aria-label={`التبديل إلى الوضع ${
-                isDarkMode ? "الفاتح" : "الداكن"
-              }`}
+              aria-label={isDarkMode ? "التبديل إلى الوضع الفاتح" : "التبديل إلى الوضع الداكن"}
             >
-              <span className="absolute -inset-1.5"></span>
-              <span className="sr-only">تغيير الوضع</span>
               <i
-                className={`ri-${isDarkMode ? "sun" : "moon"}-line h-6 w-6`}
+                className={`ri-${isDarkMode ? "sun" : "moon"}-line text-xl group-hover:rotate-12 transition-transform`}
                 aria-hidden="true"
               ></i>
             </button>
@@ -95,17 +92,18 @@ const NavBar = () => {
       </div>
 
       <div
-        className={`${isMobileMenuOpen ? "block" : "hidden"} sm:hidden`}
+        className={`${isMobileMenuOpen ? "block" : "hidden"} sm:hidden border-t border-white/10 animate-fade-in transition-all duration-300`}
         id="mobile-menu"
       >
-        <div className="space-y-1 px-2 pb-3 pt-2">
+        <div className="space-y-2 px-4 pb-6 pt-4">
           <NavLink
             to="/"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
-              `block rounded-md px-3 py-2 text-base font-medium ${
+              `block rounded-xl px-4 py-3 text-base font-bold transition-all duration-300 ${
                 isActive
-                  ? "bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1"
-                  : "text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1"
+                  ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
+                  : "text-slate-600 dark:text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
               }`
             }
           >
@@ -113,11 +111,12 @@ const NavBar = () => {
           </NavLink>
           <NavLink
             to="/athkar"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
-              `block rounded-md px-3 py-2 text-base font-medium ${
+              `block rounded-xl px-4 py-3 text-base font-bold transition-all duration-300 ${
                 isActive
-                  ? "bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1"
-                  : "text-dark-1 dark:text-light-1 hover:bg-light-2 dark:hover:bg-dark-2 hover:text-dark-1 dark:hover:text-light-1"
+                  ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
+                  : "text-slate-600 dark:text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
               }`
             }
           >
