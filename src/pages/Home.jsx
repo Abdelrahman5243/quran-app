@@ -1,6 +1,7 @@
-import Card from "../components/Card";
-import AudioPlayer from "../components/AudioPlayer";
 import { useEffect } from "react";
+import Card from "../components/Card";
+import InfoRow from "../components/InfoRow/InfoRow";
+import PrayerTimes from "../components/PrayerTimes/PrayerTimes";
 
 const Home = () => {
   useEffect(() => {
@@ -8,10 +9,11 @@ const Home = () => {
   }, []);
 
   return (
-    <main className="flex-1 flex flex-col items-center justify-center py-12 px-4 text-center">
+    <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-4 py-6 sm:px-6 sm:py-10">
       <Card />
-      <AudioPlayer />
-    </main>
+      <PrayerTimes />
+      <InfoRow />
+    </div>
   );
 };
 

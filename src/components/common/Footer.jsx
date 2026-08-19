@@ -1,13 +1,13 @@
 const Footer = () => {
   return (
-    <footer className="w-full backdrop-blur-md bg-white/40 dark:bg-black/40 border-t border-white/20 dark:border-white/10 text-center py-6">
-      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-        Using{" "}
+    <footer className="surface-muted mt-16 border-x-0 border-b-0 py-5 text-center">
+      <p className="t-meta text-ink-3">
+        بواسطة{" "}
         <a
           href="https://alquran.cloud"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-emerald-600 dark:text-emerald-400 font-bold hover:text-emerald-500 transition-colors"
+          className="font-semibold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:decoration-brand"
         >
           Al-Quran Cloud API
         </a>

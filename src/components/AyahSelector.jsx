@@ -23,7 +23,8 @@ const AyahSelector = () => {
       value={ayahsIndex + 1}
       onChange={handleAyahsChange}
       options={options}
-      label="Select Ayah"
+      icon="ri-hashtag"
+      label="الآية"
       ariaLabel="Select Ayah"
     />
   );

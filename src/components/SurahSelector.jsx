@@ -1,4 +1,3 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSurahsIndex, setAyahsIndex } from "../features/ayahsSlice";
 import surahNames from "../staticData/surahNames";
@@ -25,7 +24,8 @@ const SurahSelector = () => {
       value={surahsIndex}
       onChange={handleSurahsChange}
       options={options}
-      label="Select Surah"
+      icon="ri-book-open-line"
+      label="السورة"
       ariaLabel="Select Surah"
     />
   );

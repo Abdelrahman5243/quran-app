@@ -1,15 +1,25 @@
 import { useSelector } from "react-redux";
 
 const AyahContent = () => {
-  const { ayahsIndex, currentSurah } = useSelector(
-    (state) => state.ayahs
-  );
-  const ayahText = currentSurah?.ayahs[ayahsIndex]?.text || "No Ayah found.";
+  const { ayahsIndex, currentSurah } = useSelector((state) => state.ayahs);
+  const ayah = currentSurah?.ayahs?.[ayahsIndex];
+
+  if (!ayah) {
+    return (
+      <div className="flex min-h-[10rem] items-center justify-center px-6 py-10">
+        <p className="t-body text-ink-3">لم يتم العثور على الآية.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="content p-6 md:p-12 text-center flex items-center justify-center animate-fade-in">
-      <p id="ayah-content" className="text-fluid-quran font-arabic text-slate-800 dark:text-slate-100 transition-all duration-700 selection:bg-emerald-500/30">
-        {ayahText}
+    <div className="flex min-h-[10rem] items-center justify-center px-6 py-10 sm:px-10 sm:py-12">
+      <p
+        id="ayah-content"
+        key={`${currentSurah?.number}-${ayahsIndex}`}
+        className="t-verse measure-verse animate-rise text-balance font-verse text-ink"
+      >
+        {ayah.text}
       </p>
     </div>
   );
