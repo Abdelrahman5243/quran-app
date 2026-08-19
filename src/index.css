@@ -1,137 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Inter:wght@400;500;600;700&display=swap');
+@font-face {
+  font-family: 'UthmanicHafs';
+  src: local('KFGQPC Uthmanic Script HAFS'),
+       url('https://verses.quran.foundation/fonts/quran/hafs/uthmanic_hafs/UthmanicHafs1Ver18.woff2') format('woff2');
+  font-display: swap;
+}
 
+@layer base {
   :root {
-    --primary: 16 185 129; /* Emerald-500 */
-    --primary-light: 52 211 153; /* Emerald-400 */
+    /* Surfaces are near-opaque so text contrast never depends on the photo behind it. */
+    --surface: 255 255 255;
+    --surface-2: 246 249 248;
+    --line: 15 42 37;          /* used at low alpha only */
+    --ink: 13 27 26;           /* 15.8:1 on white */
+    --ink-2: 61 82 79;         /* 7.2:1  */
+    --ink-3: 96 117 114;       /* 4.6:1  — floor for meta text */
+    --brand: 4 120 87;         /* emerald-700: 4.8:1 on white */
+    --brand-soft: 16 185 129;
+    --surface-alpha: 0.86;
+    --veil: 250 250 249;
+  }
+
+  .dark {
+    --surface: 22 30 32;
+    --surface-2: 30 40 42;
+    --line: 226 240 237;
+    --ink: 240 246 245;        /* 15.1:1 on surface */
+    --ink-2: 190 205 203;      /* 8.9:1  */
+    --ink-3: 150 168 166;      /* 5.4:1  */
+    --brand: 52 211 153;       /* emerald-400: 8.6:1 on dark surface */
+    --brand-soft: 16 185 129;
+    --surface-alpha: 0.72;
+    --veil: 10 16 17;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     direction: rtl;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    @apply antialiased text-slate-900 dark:text-slate-50 selection:bg-emerald-500/30;
+    font-family: 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
+    line-height: 1.75;
+    @apply antialiased text-ink selection:bg-brand/25;
+    background-color: transparent;
   }
 
-  .font-arabic {
-    font-family: "Amiri Quran", serif;
+  /* Visible, consistent keyboard focus everywhere. */
+  :where(a, button, select, [tabindex]):focus-visible {
+    outline: 2px solid rgb(var(--brand));
+    outline-offset: 3px;
+    border-radius: 0.5rem;
   }
+
+  /* Mushaf script — Quranic text only. */
+  .font-verse { font-family: "UthmanicHafs", serif; }
+  /* Naskh — du'a and athkar prose: readable over many lines, unlike a Mushaf face. */
+  .font-naskh { font-family: "Amiri", "Noto Naskh Arabic", serif; }
+
+  /* Arabic contextual shaping — never disable calt. */
+  .font-verse,
+  .font-naskh {
+    font-variant-ligatures: common-ligatures contextual;
+    font-feature-settings: "calt" 1, "liga" 1, "kern" 1;
+  }
+  .font-arabic { font-family: "IBM Plex Sans Arabic", system-ui, sans-serif; }
 }
 
 @layer components {
-  .glass-card {
-    @apply bg-white/40 dark:bg-black/40 border border-white/30 dark:border-white/10 shadow-2xl transition-all duration-300;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  /*
+   * Glass is used as a specific effect — a legible sheet floating over the
+   * photograph — not as decoration. The surface stays near-opaque so body text
+   * clears 4.5:1 regardless of what part of the image sits behind it; the blur
+   * only softens the edge where the sheet meets the background.
+   */
+  .surface-card {
+    background-color: rgb(var(--surface) / var(--surface-alpha));
+    border: 1px solid rgb(var(--line) / 0.08);
+    @apply shadow-card rounded-card;
+    backdrop-filter: blur(20px) saturate(1.1);
+    -webkit-backdrop-filter: blur(20px) saturate(1.1);
   }
-  
-  .glass-button {
-    @apply bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/30 transition-all duration-300;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+
+  .dark .surface-card {
+    border-color: rgb(var(--line) / 0.1);
+  }
+
+  /* Secondary sheet: chrome, footers, nested panels. */
+  .surface-muted {
+    background-color: rgb(var(--surface-2) / 0.92);
+    border: 1px solid rgb(var(--line) / 0.07);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .control {
+    background-color: rgb(var(--surface) / 0.96);
+    border: 1px solid rgb(var(--line) / 0.12);
+    @apply text-ink rounded-control transition-colors duration-200;
+  }
+
+  .control:hover {
+    border-color: rgb(var(--brand) / 0.45);
+  }
+
+  .dark .control {
+    border-color: rgb(var(--line) / 0.14);
   }
 }
 
-* {
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+@layer utilities {
+  /* Type roles. Ramp is deliberate: clear steps, no two roles within 10%. */
+  .t-display { font-size: clamp(1.5rem, 1.25rem + 1.1vw, 2rem); line-height: 1.25; font-weight: 700; letter-spacing: -0.01em; }
+  .t-title   { font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem); line-height: 1.35; font-weight: 700; }
+  .t-body    { font-size: 1rem; line-height: 1.7; }
+  .t-meta    { font-size: 0.875rem; line-height: 1.5; }
+  .t-label   { font-size: 0.75rem; line-height: 1.4; font-weight: 600; }
+
+  /*
+   * Quran verse. Capped well below the old 3.75rem — at that size a two-line
+   * ayah pushed the controls off-screen. Extra leading is for the diacritics.
+   */
+  .t-verse {
+    font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.375rem);
+    line-height: 2.1;
+    word-spacing: 0.06em;
+  }
+
+  /* Athkar body: long RTL prose, held to a readable measure. */
+  .t-dhikr {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+    line-height: 1.95;
+  }
+
+  .measure-verse { max-width: 68ch; }
+  .measure-prose { max-width: 62ch; }
 }
 
-/* Fluid Typography */
-.text-fluid-base {
-  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
-}
-
-.text-fluid-lg {
-  font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
-}
-
-.text-fluid-xl {
-  font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
-}
-
-.text-fluid-quran {
-  font-size: clamp(1.75rem, 1.2rem + 2.5vw, 3.5rem);
-  line-height: 1.6;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(var(--primary), 0.2);
-  border-radius: 10px;
+  background: rgb(var(--ink-3) / 0.35);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
 }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--brand) / 0.6); background-clip: content-box; }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--primary), 0.5);
-}
+/* Loader */
+.loader { transform-origin: center; overflow: visible; }
 
-.loader {
-  height: 27.5;
-  width: 55px;
-  transform-origin: center;
-  overflow: visible;
-}
-
-.car {
-  fill: none;
-  stroke: black;
+.loader-track { stroke: rgb(var(--ink-3) / 0.25); }
+.loader-car {
+  stroke: rgb(var(--brand));
   stroke-dasharray: 15, 85;
   stroke-dashoffset: 0;
   stroke-linecap: round;
   animation: travel 1.3s linear infinite;
-  will-change: stroke-dasharray, stroke-dashoffset;
-  transition: stroke 0.5s ease;
-}
-
-.track {
-  stroke: black;
-  opacity: 0.1;
+  will-change: stroke-dashoffset;
 }
 
 @keyframes travel {
-  0% {
-    stroke-dashoffset: 0;
+  to { stroke-dashoffset: 100; }
+}
+
+/* One authored entrance, exponential ease-out from a visible default. */
+@keyframes riseIn {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+.animate-rise {
+  animation: riseIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
 
-  100% {
-    stroke-dashoffset: 100;
+select { @apply cursor-pointer outline-none appearance-none; }
+select option { background-color: rgb(var(--surface)); color: rgb(var(--ink)); }
+
+/* Background photo: serve the smaller file to narrow viewports. */
+@media (max-width: 640px) {
+  .bg-photo {
+    background-image: url("/islamic-bg-sm.webp") !important;
   }
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
-}
-
-.animate-pulse-subtle {
-  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
-}
-
-/* Select custom styles */
-select {
-  @apply cursor-pointer outline-none appearance-none;
-}
-
-select option {
-  @apply bg-white dark:bg-slate-900;
 }
