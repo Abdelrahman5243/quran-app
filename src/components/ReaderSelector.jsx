@@ -22,7 +22,8 @@ const ReaderSelector = () => {
       value={reader}
       onChange={handleReaderChange}
       options={options}
-      label="Select Reader"
+      icon="ri-mic-line"
+      label="القارئ"
       ariaLabel="Select Reader"
     />
   );

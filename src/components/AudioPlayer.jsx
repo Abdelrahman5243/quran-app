@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../features/ayahsSlice";
-import ReaderSelector from "./ReaderSelector";
 
 const AudioPlayer = () => {
   const { surahsIndex, ayahsIndex, currentSurah } = useSelector(
@@ -91,48 +90,44 @@ const AudioPlayer = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-8 mt-10 w-full max-w-4xl mx-auto px-4">
-      <div className="w-full max-w-sm transition-all duration-500 transform hover:scale-105">
-        <ReaderSelector />
-      </div>
+    <div className="flex items-center justify-center gap-3">
+      <button
+        type="button"
+        className="grid h-10 w-10 place-items-center rounded-full text-ink-2 transition-colors hover:bg-brand/10 hover:text-brand active:scale-95"
+        onClick={handlePrev}
+        aria-label="الآية السابقة"
+        title="الآية السابقة"
+      >
+        <i className="ri-skip-back-fill text-xl rotate-180" aria-hidden="true" />
+      </button>
 
-      <div className="flex items-center justify-center gap-10 md:gap-16">
-        <button
-          className="glass-button w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full text-emerald-600 dark:text-emerald-400 hover:scale-110 active:scale-95 shadow-lg group"
-          onClick={handlePrev}
-          aria-label="الآية السابقة"
-          title="الآية السابقة"
-        >
-          <i className="ri-arrow-right-s-line text-3xl md:text-4xl group-hover:translate-x-1 transition-transform" aria-hidden="true"></i>
-        </button>
+      <button
+        type="button"
+        className="grid h-12 w-12 place-items-center rounded-full bg-brand text-white transition-all duration-200 ease-out hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+        onClick={togglePlayPause}
+        disabled={isLoading}
+        aria-label={isPlaying ? "إيقاف مؤقت" : "تشغيل"}
+      >
+        {isLoading ? (
+          <i className="ri-loader-2-line animate-spin text-xl" aria-hidden="true" />
+        ) : isPlaying ? (
+          <i className="ri-pause-fill text-xl" aria-hidden="true" />
+        ) : (
+          <i className="ri-play-fill -me-0.5 text-xl" aria-hidden="true" />
+        )}
+      </button>
 
-        <button
-          className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 flex justify-center items-center rounded-full bg-emerald-500 text-white shadow-2xl shadow-emerald-500/40 transition-all duration-300 transform hover:scale-110 active:scale-95 disabled:bg-emerald-300 relative group"
-          onClick={togglePlayPause}
-          disabled={isLoading}
-          aria-label={isPlaying ? "إيقاف مؤقت" : "تشغيل"}
-        >
-          <div className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-20 group-hover:opacity-40 transition-opacity"></div>
-          {isLoading ? (
-            <i className="ri-loader-2-line animate-spin text-5xl md:text-6xl" aria-hidden="true"></i>
-          ) : isPlaying ? (
-            <i className="ri-pause-fill text-5xl md:text-6xl" aria-hidden="true"></i>
-          ) : (
-            <i className="ri-play-fill text-5xl md:text-6xl ml-2" aria-hidden="true"></i>
-          )}
-        </button>
+      <button
+        type="button"
+        className="grid h-10 w-10 place-items-center rounded-full text-ink-2 transition-colors hover:bg-brand/10 hover:text-brand active:scale-95"
+        onClick={handleNext}
+        aria-label="الآية التالية"
+        title="الآية التالية"
+      >
+        <i className="ri-skip-forward-fill text-xl rotate-180" aria-hidden="true" />
+      </button>
 
-        <button
-          className="glass-button w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full text-emerald-600 dark:text-emerald-400 hover:scale-110 active:scale-95 shadow-lg group"
-          onClick={handleNext}
-          aria-label="الآية التالية"
-          title="الآية التالية"
-        >
-          <i className="ri-arrow-left-s-line text-3xl md:text-4xl group-hover:-translate-x-1 transition-transform" aria-hidden="true"></i>
-        </button>
-      </div>
-
-      {ayahAudio && <audio ref={audioRef} preload="metadata"></audio>}
+      <audio ref={audioRef} preload="metadata" />
     </div>
   );
 };
