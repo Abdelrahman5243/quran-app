@@ -1,222 +1,272 @@
-import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-const apiUrl = import.meta.env.VITE_API_URL_ATHKAR;
 import AthkarCard from "../components/AthkarCard/AthkarCard";
+
+const apiUrl = import.meta.env.VITE_API_URL_ATHKAR;
+const TABS = [
+  { key: "morning", label: "أذكار الصباح", icon: "ri-sun-line" },
+  { key: "evening", label: "أذكار المساء", icon: "ri-moon-line" },
+];
+
+const emptyProgress = () => ({
+  morning: {},
+  evening: {},
+  lastMorningIdx: 0,
+  lastEveningIdx: 0,
+});
+
+const RING = 2 * Math.PI * 26;
+
+const today = () => new Date().toISOString().split("T")[0];
 
 const AthkarPage = () => {
   const { type } = useParams();
   const navigate = useNavigate();
   const [athkar, setAthkar] = useState([]);
-  const selectedAthkar = type === "evening" ? 1 : 0;
   const [isLoading, setIsLoading] = useState(true);
-  
-  // Daily Progress State
+  const [error, setError] = useState(null);
+
+  const selectedAthkar = type === "evening" ? 1 : 0;
+  const category = selectedAthkar === 0 ? "morning" : "evening";
+
   const [progress, setProgress] = useState(() => {
     const saved = localStorage.getItem("athkarDailyProgress");
     if (saved) {
-      const parsed = JSON.parse(saved);
-      const today = new Date().toISOString().split("T")[0];
-      // Only return if it's from today
-      if (parsed.date === today) {
-        return parsed.data || { morning: {}, evening: {}, lastMorningIdx: 0, lastEveningIdx: 0 };
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.date === today()) return parsed.data || emptyProgress();
+      } catch {
+        /* corrupt entry — fall through to a fresh day */
       }
     }
-    return { morning: {}, evening: {}, lastMorningIdx: 0, lastEveningIdx: 0 };
+    return emptyProgress();
   });
 
-  // Save progress to localStorage whenever it changes
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    localStorage.setItem("athkarDailyProgress", JSON.stringify({
-      date: today,
-      data: progress
-    }));
+    localStorage.setItem(
+      "athkarDailyProgress",
+      JSON.stringify({ date: today(), data: progress })
+    );
   }, [progress]);
 
-  const getAthkar = async () => {
+  const getAthkar = useCallback(async () => {
     setIsLoading(true);
-    const cachedAthkar = localStorage.getItem("athkar");
-    if (cachedAthkar) {
-      setAthkar(JSON.parse(cachedAthkar));
-    } else {
+    setError(null);
+    const cached = localStorage.getItem("athkar");
+    if (cached) {
       try {
-        const res = await fetch(`${apiUrl}`);
-        const data = await res.json();
-        const athkarData = [data["أذكار الصباح"], data["أذكار المساء"]];
-        setAthkar(athkarData);
-        localStorage.setItem("athkar", JSON.stringify(athkarData));
-      } catch (error) {
-        console.error("Error fetching athkar:", error);
+        setAthkar(JSON.parse(cached));
+        setIsLoading(false);
+        return;
+      } catch {
+        localStorage.removeItem("athkar");
       }
     }
-    setIsLoading(false);
-  };
+    try {
+      const res = await fetch(`${apiUrl}`);
+      if (!res.ok) throw new Error("network");
+      const data = await res.json();
+      const athkarData = [data["أذكار الصباح"], data["أذكار المساء"]];
+      setAthkar(athkarData);
+      localStorage.setItem("athkar", JSON.stringify(athkarData));
+    } catch {
+      setError("تعذّر تحميل الأذكار. تحقق من اتصالك ثم أعد المحاولة.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     getAthkar();
-    if (!type) {
-      navigate('/athkar/morning', { replace: true });
-    }
-  }, [type]);
+  }, [getAthkar]);
 
-  // Scroll to last reached index on mount or category change
   useEffect(() => {
-    if (!isLoading && athkar[selectedAthkar]) {
-      const lastIdx = selectedAthkar === 0 ? progress.lastMorningIdx : progress.lastEveningIdx;
-      if (lastIdx > 0) {
-        setTimeout(() => {
-          const element = document.getElementById(`athkar-${selectedAthkar}-${lastIdx}`);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 500);
-      }
-    }
+    if (!type) navigate("/athkar/morning", { replace: true });
+  }, [type, navigate]);
+
+  const lastIdx = selectedAthkar === 0 ? progress.lastMorningIdx : progress.lastEveningIdx;
+
+  // Resume where the reader stopped: scroll the last-counted dhikr into view.
+  useEffect(() => {
+    if (isLoading || !athkar[selectedAthkar] || lastIdx <= 0) return;
+    const t = setTimeout(() => {
+      document
+        .getElementById(`athkar-${selectedAthkar}-${lastIdx}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 400);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAthkar, isLoading]);
 
-  const completedCount = useMemo(() => {
-    if (!athkar[selectedAthkar]) return 0;
-    const category = selectedAthkar === 0 ? 'morning' : 'evening';
-    return athkar[selectedAthkar].filter((_, idx) => progress[category][idx] === 0).length;
-  }, [athkar, selectedAthkar, progress]);
+  const list = athkar[selectedAthkar];
+  const totalCount = list?.length || 0;
 
-  const totalCount = useMemo(() => {
-    return athkar[selectedAthkar]?.length || 0;
-  }, [athkar, selectedAthkar]);
+  /*
+    A dhikr counts as done when its stored remaining count is 0. Untouched
+    items have no stored entry at all, so an explicit === 0 test on the
+    stored value is what we want here.
+  */
+  const completedCount = useMemo(
+    () => (list ? list.filter((_, idx) => progress[category][idx] === 0).length : 0),
+    [list, category, progress]
+  );
 
-  const handleCountChange = useCallback((type, index, currentCount) => {
-    setProgress(prev => {
-      const newProgress = { ...prev };
-      const category = type === 0 ? 'morning' : 'evening';
-      newProgress[category] = { ...prev[category], [index]: currentCount };
-      
-      // Update last reached index
-      if (type === 0) {
-        newProgress.lastMorningIdx = Math.max(prev.lastMorningIdx, index);
-      } else {
-        newProgress.lastEveningIdx = Math.max(prev.lastEveningIdx, index);
-      }
-      
-      return newProgress;
-    });
-  }, []);
+  const pct = totalCount ? Math.round((completedCount / totalCount) * 100) : 0;
+
+  const handleCountChange = useCallback(
+    (tabIndex, index, currentCount) => {
+      setProgress((prev) => {
+        const cat = tabIndex === 0 ? "morning" : "evening";
+        const next = { ...prev, [cat]: { ...prev[cat], [index]: currentCount } };
+        const key = tabIndex === 0 ? "lastMorningIdx" : "lastEveningIdx";
+        next[key] = Math.max(prev[key], index);
+        return next;
+      });
+    },
+    []
+  );
+
+  const resetCategory = () => {
+    if (!confirm("هل تريد إعادة تعيين التقدم لهذا اليوم؟")) return;
+    setProgress((prev) => ({
+      ...prev,
+      [category]: {},
+      [selectedAthkar === 0 ? "lastMorningIdx" : "lastEveningIdx"]: 0,
+    }));
+  };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-12 flex flex-col items-center">
-      {/* Tab Switcher */}
-      <div className="glass-card flex p-1.5 rounded-2xl mb-12 animate-fade-in shadow-xl">
-        <Link
-          to="/athkar/morning"
-          className={`px-8 py-3 rounded-xl transition-all duration-500 font-bold text-lg ${
-            selectedAthkar === 0
-              ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
-              : "text-slate-600 dark:text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
-          }`}
-        >
-          أذكار الصباح
-        </Link>
-        <Link
-          to="/athkar/evening"
-          className={`px-8 py-3 rounded-xl transition-all duration-500 font-bold text-lg ${
-            selectedAthkar === 1
-              ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
-              : "text-slate-600 dark:text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
-          }`}
-        >
-          أذكار المساء
-        </Link>
+    <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
+      {/* Tabs */}
+      <div
+        role="tablist"
+        aria-label="نوع الأذكار"
+        className="mx-auto mb-6 flex w-fit gap-1 rounded-control bg-surface/90 p-1"
+      >
+        {TABS.map((tab, i) => (
+          <Link
+            key={tab.key}
+            to={`/athkar/${tab.key}`}
+            role="tab"
+            aria-selected={selectedAthkar === i}
+            className={`flex items-center gap-2 rounded-[0.625rem] px-4 py-2 text-sm font-semibold transition-colors duration-200 sm:px-5 ${
+              selectedAthkar === i
+                ? "bg-brand text-white"
+                : "text-ink-2 hover:bg-brand/10 hover:text-brand"
+            }`}
+          >
+            <i className={`${tab.icon} text-base`} aria-hidden="true" />
+            {tab.label}
+          </Link>
+        ))}
       </div>
 
-      {/* Content Area */}
       {isLoading ? (
-        <div className="mt-20 flex flex-col items-center gap-4 animate-pulse">
-          <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
-          <p className="text-xl font-bold text-slate-500 dark:text-slate-400">جاري تحميل الأذكار...</p>
+        <div className="space-y-3" aria-busy="true" aria-live="polite">
+          <span className="sr-only">جاري تحميل الأذكار</span>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="surface-card flex gap-4 p-5">
+              <div className="flex-1 space-y-2.5">
+                <div className="h-4 w-full animate-pulse rounded bg-ink/10" />
+                <div className="h-4 w-4/5 animate-pulse rounded bg-ink/10" />
+                <div className="h-4 w-2/3 animate-pulse rounded bg-ink/10" />
+              </div>
+              <div className="h-16 w-16 shrink-0 animate-pulse rounded-control bg-ink/10" />
+            </div>
+          ))}
+        </div>
+      ) : error ? (
+        <div className="surface-card flex flex-col items-center gap-3 p-10 text-center">
+          <i className="ri-wifi-off-line text-3xl text-ink-3" aria-hidden="true" />
+          <p className="t-body text-ink-2">{error}</p>
+          <button
+            type="button"
+            onClick={getAthkar}
+            className="rounded-control bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
+          >
+            إعادة المحاولة
+          </button>
         </div>
       ) : (
-        <div className="w-full max-w-5xl flex flex-col gap-8 animate-fade-in px-2 md:px-0">
-          {/* Progress Overview */}
-          <div className="glass-card p-6 rounded-3xl mb-4 border border-emerald-500/20 bg-white/40 dark:bg-emerald-500/5 shadow-sm">
-            <div className="flex justify-between items-center mb-4">
-              <div>
-                <h3 className="text-2xl font-black text-slate-800 dark:text-white">إنجازك اليوم</h3>
-                <p className="text-slate-600 dark:text-slate-300 font-bold">لقد قرأت {completedCount} من أصل {totalCount}</p>
+        <div className="flex flex-col gap-3">
+          {/* Progress summary — a single quiet bar, not a dashboard. */}
+          <div className="surface-card px-5 py-4">
+            <div className="mb-3 flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <h2 className="t-title text-ink">إنجازك اليوم</h2>
+                <p className="t-meta text-ink-2">
+                  لقد قرأت{" "}
+                  <span className="font-bold tabular-nums text-brand">{completedCount}</span> من{" "}
+                  <span className="tabular-nums">{totalCount}</span>
+                </p>
               </div>
-              <div className="w-20 h-20 relative flex items-center justify-center">
-                <svg className="w-full h-full transform -rotate-90">
+              {/* Completion ring — the at-a-glance read of the same number. */}
+              <div className="relative grid h-16 w-16 shrink-0 place-items-center">
+                <svg className="h-full w-full -rotate-90" viewBox="0 0 64 64" aria-hidden="true">
                   <circle
-                    cx="40"
-                    cy="40"
-                    r="34"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="6"
-                    className="text-slate-200 dark:text-slate-800"
+                    cx="32" cy="32" r="26" fill="none" strokeWidth="5"
+                    className="stroke-ink/10"
                   />
                   <circle
-                    cx="40"
-                    cy="40"
-                    r="34"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="6"
-                    strokeDasharray={213.6}
-                    strokeDashoffset={213.6 - (213.6 * (completedCount / (totalCount || 1)))}
+                    cx="32" cy="32" r="26" fill="none" strokeWidth="5"
                     strokeLinecap="round"
-                    className="text-emerald-500 transition-all duration-1000"
+                    strokeDasharray={RING}
+                    strokeDashoffset={RING - (RING * pct) / 100}
+                    className="stroke-brand transition-[stroke-dashoffset] duration-700 ease-out"
                   />
                 </svg>
-                <span className="absolute text-xl font-black text-emerald-600 dark:text-emerald-400">
-                  {Math.round((completedCount / (totalCount || 1)) * 100)}%
-                </span>
+                <span className="absolute text-sm font-bold tabular-nums text-brand">{pct}%</span>
               </div>
             </div>
-            <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden mb-4">
-              <div 
-                className="h-full bg-emerald-500 transition-all duration-1000 shadow-[0_0_8px_rgba(16,185,129,0.3)]" 
-                style={{ width: `${(completedCount / (totalCount || 1)) * 100}%` }}
-              ></div>
+            <div
+              className="h-1.5 w-full overflow-hidden rounded-full bg-ink/10"
+              role="progressbar"
+              aria-valuenow={pct}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="نسبة الإنجاز"
+            >
+              <div
+                className="h-full rounded-full bg-brand transition-[width] duration-500 ease-out"
+                style={{ width: `${pct}%` }}
+              />
             </div>
-            <div className="flex justify-end">
-              <button 
-                onClick={() => {
-                   if(confirm('هل تريد إعادة تعيين التقدم لهذا اليوم؟')) {
-                     setProgress(prev => {
-                       const newProgress = { ...prev };
-                       const category = selectedAthkar === 0 ? 'morning' : 'evening';
-                       newProgress[category] = {};
-                       if (selectedAthkar === 0) newProgress.lastMorningIdx = 0;
-                       else newProgress.lastEveningIdx = 0;
-                       return newProgress;
-                     });
-                   }
-                }}
-                className="text-xs font-bold text-slate-400 dark:text-slate-500 hover:text-emerald-500 transition-colors flex items-center gap-1"
+            <div className="mt-3 flex items-center justify-end">
+              <button
+                type="button"
+                onClick={resetCategory}
+                className="t-label -m-2 flex items-center gap-1 p-2 text-ink-3 transition-colors hover:text-brand"
               >
-                <i className="ri-refresh-line"></i>
-                إعادة تعيين التقدم
+                <i className="ri-refresh-line" aria-hidden="true" />
+                إعادة تعيين
               </button>
             </div>
           </div>
-          {athkar[selectedAthkar]?.map((athkarItem, index) => {
-            const category = selectedAthkar === 0 ? 'morning' : 'evening';
-            const savedCount = progress[category][index];
-            const isLastReached = (selectedAthkar === 0 ? progress.lastMorningIdx : progress.lastEveningIdx) === index;
+
+          {list?.map((item, index) => {
+            const saved = progress[category][index];
+            const isLastReached = lastIdx === index && saved !== undefined && saved !== 0;
 
             return (
-              <div 
-                key={`${index}-${athkarItem.category}`} 
+              <div
+                key={`${index}-${item.category}`}
                 id={`athkar-${selectedAthkar}-${index}`}
                 className="relative"
               >
-                {isLastReached && savedCount !== 0 && (
-                  <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-1.5 h-12 bg-emerald-500 rounded-full hidden md:block animate-pulse"></div>
+                {/* Where you stopped last time. */}
+                {isLastReached && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -start-3 top-1/2 hidden h-10 w-1 -translate-y-1/2 rounded-full bg-brand md:block"
+                  />
                 )}
                 <AthkarCard
-                  content={athkarItem.content}
-                  count={+athkarItem.count}
-                  initialCount={savedCount !== undefined ? savedCount : +athkarItem.count}
-                  onCountChange={(newCount) => handleCountChange(selectedAthkar, index, newCount)}
+                  content={item.content}
+                  count={+item.count}
+                  initialCount={saved !== undefined ? saved : +item.count}
+                  onCountChange={(newCount) =>
+                    handleCountChange(selectedAthkar, index, newCount)
+                  }
                 />
               </div>
             );
